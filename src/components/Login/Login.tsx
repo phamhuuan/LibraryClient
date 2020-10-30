@@ -15,13 +15,16 @@ import {LoginDataBodyType} from '../../@types/dataBody';
 import {RootReducerType} from '../../@types/reducer';
 import ERROR_CODE from '../../constants/ErrorCode';
 import {Tooltip} from '@material-ui/core';
+import CustomModal from '../Common/CustomModal';
 
 const Login: FC = () => {
 	type TextInputHandleType = ElementRef<typeof TextInput>;
 	type CheckboxHandleType = ElementRef<typeof CustomCheckbox>;
+	type ModalHandleType = ElementRef<typeof CustomModal>
 	const emailFieldRef = useRef<TextInputHandleType>(null);
 	const passwordFieldRef = useRef<TextInputHandleType>(null);
 	const checkboxRef = useRef<CheckboxHandleType>(null);
+	const modalRef = useRef<ModalHandleType>(null);
 	const loginErrorCode = useSelector<RootReducerType, number | undefined>((state) => state.userReducer.loginErrorCode);
 	const dispatch = useDispatch();
 
@@ -71,17 +74,24 @@ const Login: FC = () => {
 				<div>
 					<Tooltip title={'You will be automatic login in 7 days!'}>
 						<FormControlLabel
-			        control={
-			          <CustomCheckbox ref={checkboxRef} checked={false} color={'primary'} />
-			        }
-			        label="Keep login"
-			      />
+							control={
+								<CustomCheckbox ref={checkboxRef} checked={false} color={'primary'} />
+							}
+							label="Keep login"
+						/>
 					</Tooltip>
 				</div>
 				<div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
 					<Button variant="contained" color="primary" onClick={onClickLogin}>Login</Button>
 				</div>
+				<div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+					<Button variant="contained" color="primary" onClick={() => {modalRef.current?.openModal();}}>Show Modal</Button>
+				</div>
 			</Box>
+			<CustomModal ref={modalRef} open={false}>
+				<div style={{width: 400}}>
+				</div>
+			</CustomModal>
 		</div>
 	);
 }
