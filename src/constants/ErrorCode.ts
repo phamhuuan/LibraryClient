@@ -1,0 +1,14 @@
+const ERROR_CODE = {
+	LOGIN_ERROR: {
+		UNKNOW: -1,
+		WRONG_PASSWORD: 0,
+		ACCOUNT_NOT_EXSIST: 1,
+	},
+	TOKEN_ERROR: {
+		UNKNOW: -1,
+		TOKEN_EXPIRED: 0,
+		INVALID_TOKEN: 1,
+	},
+};
+
+export default ERROR_CODE;
