@@ -18,20 +18,28 @@ const MainRoute: FC = () => {
 		needLogin: true,
 		loading: true,
 	});
+	// dung de dispatch 1 action cua redux
 	const dispatch = useDispatch();
+	// dung de lay du lieu tu trong store cua redux
 	const user = useSelector<RootReducerType, UserType | undefined>((state) => state.userReducer.user);
 	useEffect(() => {
+		// kiem tra xem da dang nhap hay chua, neu chua thi hien form dang nhap
 		try {
 			setTimeout(() => {
+				// kiem tra thong tin ve user trong store
 				if (!user) {
+					// neu khong co thi kiem tra token luu trong cookie
 					const token = Cookies.get('token');
 					if (!token) {
+						// neu khong co trong cookie thi hien form login
 						setState({loading: false, needLogin: true});
 					} else {
+						// neu co thi luu thong tin vao store
 						dispatch({type: GET_USER_INFO_FROM_TOKEN, token});
 						// setState({loading: false, needLogin: false});
 					}
 				} else {
+					// neu co thi tiep tuc vao trang muon vao
 					setState({loading: false, needLogin: false});
 				}
 			}, 0);

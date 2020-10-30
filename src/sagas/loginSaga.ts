@@ -14,17 +14,23 @@ import {DoLoginSagaAction} from '../@types/saga';
 
 function *doLogin(action: DoLoginSagaAction) {
 	try {
+		// put action sang reducer de xoa message login
 		yield put({type: LOGIN_RESET_MESSAGE});
+		// call api login
 		const response = yield Api.doLoginApi(action.dataBody);
 		if (response && response.data) {
 			if (response.data.status === OK) {
+				// neu login thanh cong (mo loginReducer.ts ra de xem phan xu li)
 				yield put({type: LOGIN_SUCCESS, user: response.data.user});
 				if (action.keepLogin) {
+					// neu keep login thi cho token luu trong cookie qua han trong 7 ngay
 					Cookie.set('token', response.data.token, {expires: 7});
 				} else {
+					// neu khong thi se duy tri dang nhap trong 30 phut
 					Cookie.set('token', response.data.token, {expires: new Date(new Date().getTime() + 30 * 60 * 1000)});
 				}
 			} else {
+				// neu login that bai
 				yield put({type: LOGIN_FAIL, errorCode: response.data.errorCode})
 			}
 		} else {
@@ -36,6 +42,7 @@ function *doLogin(action: DoLoginSagaAction) {
 }
 
 export function* watchDoLogin() {
+	// redux saga se lang nghe action login
 	yield takeLatest(LOGIN, doLogin);
 }
 

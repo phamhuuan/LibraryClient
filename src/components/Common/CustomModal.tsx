@@ -2,7 +2,6 @@ import React, {
 	forwardRef,
 	useCallback,
 	useImperativeHandle,
-	useRef,
 	useState,
 } from "react";
 import Modal from "@material-ui/core/Modal";
@@ -17,6 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
 			backgroundColor: theme.palette.background.paper,
 			boxShadow: theme.shadows[5],
 			padding: theme.spacing(2, 4, 3),
+			borderRadius: 20,
 		},
 	}),
 );

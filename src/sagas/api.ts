@@ -48,7 +48,7 @@ function* handlePostRequest(urlApi: string, config: any, dataBody: any) {
 		console.log('Timer', (endTime - startTime), "url", urlApi, 'response', response);
 		return response;
 	}).catch(error => {
-		console.log("Api handlePostRequest error: " + error)
+		console.log("Api handlePostRequest error: " + error);
 		return null;
 	});
 }
@@ -66,7 +66,7 @@ function* handleGetRequest(urlApi: string, config: any) {
 		console.log('Timer', (endTime - startTime), "url", urlApi, 'response', response);
 		return response;
 	}).catch(error => {
-		console.log("Api handleGetRequest error: " + error)
+		console.log("Api handleGetRequest error: " + error);
 		return null;
 	});
 }
