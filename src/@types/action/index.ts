@@ -22,3 +22,9 @@ export interface GetUserInforFromTokenSuccessActionType extends ActionType {
 export interface PlusNumber extends ActionType{
 
 }
+export interface MinusNumber extends ActionType{
+
+}
+export interface ResetNumber extends ActionType{
+	
+}

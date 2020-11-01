@@ -10,7 +10,7 @@ import Button from '@material-ui/core/Button';
 import {checkValidEmail} from '../../utils/Utils';
 import {defaultTextInputState, TextInputStateType} from '../../@types/common/TextInput';
 import {useDispatch, useSelector} from 'react-redux';
-import {LOGIN,Tang,Giam,Reset} from '../../actions/ActionType';
+import {LOGIN,INCREASE,DECREASE,RESET} from '../../actions/ActionType';
 import {LoginDataBodyType} from '../../@types/dataBody';
 import {RootReducerType} from '../../@types/reducer';
 import ERROR_CODE from '../../constants/ErrorCode';
@@ -55,8 +55,14 @@ const Login: FC = () => {
 		dispatch({type: LOGIN, dataBody, keepLogin: checkboxValue});
 	};
 	 const onPlus=(): void=>{
-	 		dispatch({type: Tang});
+	 		dispatch({type: INCREASE});
 	 };
+	 const onMinus=():void=>{
+		 dispatch({type: DECREASE});
+	 }
+	 const onReset=():void=>{
+		 dispatch({type: RESET});
+	 }
 
 	useEffect(() => {
 		if (loginErrorCode === ERROR_CODE.LOGIN_ERROR.ACCOUNT_NOT_EXSIST) {
@@ -91,11 +97,11 @@ const Login: FC = () => {
 				</div>
 				<InputLabel>{number}</InputLabel>
 				<div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-					<Button variant="contained" color="primary" onClick={onClickLogin}>Login</Button>&nbsp;
-					<Button variant="contained" color="primary" onClick={onPlus}>Tang</Button>&nbsp;
-					<Button variant="contained" color="primary">Giam</Button>&nbsp;
-					<Button variant="contained" color="primary">Reset</Button>
-
+					<Button style={{marginRight: 10}} variant="contained" color="primary" onClick={onClickLogin}>Login</Button>
+					<Button style={{marginRight: 10}} variant="contained" color="primary" onClick={onPlus}>Tang</Button>
+					<Button style={{marginRight: 10}} variant="contained" color="primary" onClick={onMinus} >Giam</Button>
+					<Button variant="contained" color="primary" onClick={onReset}>Reset</Button>
+                       
 				</div>
 				{/* <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
 					<Button variant="contained" color="primary" onClick={() => {modalRef.current?.openModal();}}>Show Modal</Button>
