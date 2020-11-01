@@ -18,3 +18,7 @@ export interface LoginSuccessActionType extends ActionType {
 export interface GetUserInforFromTokenSuccessActionType extends ActionType {
 	user: UserType,
 }
+
+export interface PlusNumber extends ActionType{
+
+}

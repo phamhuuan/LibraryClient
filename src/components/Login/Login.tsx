@@ -10,13 +10,14 @@ import Button from '@material-ui/core/Button';
 import {checkValidEmail} from '../../utils/Utils';
 import {defaultTextInputState, TextInputStateType} from '../../@types/common/TextInput';
 import {useDispatch, useSelector} from 'react-redux';
-import {LOGIN} from '../../actions/ActionType';
+import {LOGIN,Tang,Giam,Reset} from '../../actions/ActionType';
 import {LoginDataBodyType} from '../../@types/dataBody';
 import {RootReducerType} from '../../@types/reducer';
 import ERROR_CODE from '../../constants/ErrorCode';
 import {Tooltip} from '@material-ui/core';
 import CustomModal from '../Common/CustomModal';
 import NetworkErrorModal from '../Common/NetworkErrorModal';
+ 
 
 const Login: FC = () => {
 	type TextInputHandleType = ElementRef<typeof TextInput>;
@@ -27,6 +28,7 @@ const Login: FC = () => {
 	const checkboxRef = useRef<CheckboxHandleType>(null);
 	const modalRef = useRef<ModalHandleType>(null);
 	const loginErrorCode = useSelector<RootReducerType, number | undefined>((state) => state.userReducer.loginErrorCode);
+	const number=useSelector<RootReducerType,number>((state)=>state.countReducer.number);//lay number tu countReducer
 	const dispatch = useDispatch();
 
 	const onClickLogin = (): void => {
@@ -52,6 +54,9 @@ const Login: FC = () => {
 		// dispatch action login (mo file src/saga/loginSaga.ts)
 		dispatch({type: LOGIN, dataBody, keepLogin: checkboxValue});
 	};
+	 const onPlus=(): void=>{
+	 		dispatch({type: Tang});
+	 };
 
 	useEffect(() => {
 		if (loginErrorCode === ERROR_CODE.LOGIN_ERROR.ACCOUNT_NOT_EXSIST) {
@@ -70,6 +75,7 @@ const Login: FC = () => {
 			<Box style={{width: 400, backgroundColor: '#eee', padding: 20}} borderRadius={20} borderColor={'primary.main'} border={2}>
 				<InputLabel style={{textAlign: 'center', fontSize: 40, fontWeight: 'bold', color: 'black'}}>Login</InputLabel>
 				<InputLabel style={{color: 'black'}}>Email address</InputLabel>
+               
 				<TextInput ref={emailFieldRef} label={'Enter email'} style={{width: 300}} variant={'outlined'} />
 				<InputLabel style={{color: 'black', marginTop: 10}}>Password</InputLabel>
 				<TextInput ref={passwordFieldRef} label={'Enter password'} style={{width: 300}} variant={'outlined'} type={'password'} />
@@ -83,15 +89,22 @@ const Login: FC = () => {
 						/>
 					</Tooltip>
 				</div>
+				<InputLabel>{number}</InputLabel>
 				<div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-					<Button variant="contained" color="primary" onClick={onClickLogin}>Login</Button>
+					<Button variant="contained" color="primary" onClick={onClickLogin}>Login</Button>&nbsp;
+					<Button variant="contained" color="primary" onClick={onPlus}>Tang</Button>&nbsp;
+					<Button variant="contained" color="primary">Giam</Button>&nbsp;
+					<Button variant="contained" color="primary">Reset</Button>
+
 				</div>
 				{/* <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
 					<Button variant="contained" color="primary" onClick={() => {modalRef.current?.openModal();}}>Show Modal</Button>
 				</div> */}
 			</Box>
+
 			<NetworkErrorModal ref={modalRef} />
 		</div>
+		
 	);
 };
 

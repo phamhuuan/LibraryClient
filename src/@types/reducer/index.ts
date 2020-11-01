@@ -7,7 +7,10 @@ export interface UserReducerStateType {
 	getUserInfoFromTokenMessage: string,
 	getUserInfoFromTokenErrorCode: number | undefined,
 }
-
+export interface CountReducerStateType{
+	number: number
+}
 export interface RootReducerType {
 	userReducer: UserReducerStateType;
+	countReducer: CountReducerStateType;
 }
