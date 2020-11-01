@@ -20,6 +20,7 @@ const TextInput = forwardRef<TextInputHandleType, TextInputPropsType>((props, re
 		error: props.error || false,
 		helperText: props.helperText || '',
 		label: props.label || '',
+		disable: props.disabled || false,
 	});
 	const [animationClassName, setAnimationClassName] = useState<string>('');
 	
@@ -55,6 +56,7 @@ const TextInput = forwardRef<TextInputHandleType, TextInputPropsType>((props, re
 		<div className={animationClassName}>
 			<TextField
 				style={props.style || undefined}
+				disabled={state.disable}
 				error={state.error}
 				type={state.type}
 				label={state.label}

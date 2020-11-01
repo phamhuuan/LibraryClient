@@ -6,6 +6,7 @@ export interface TextInputStateType {
 	helperText: string;
 	label: string;
 	type?: string;
+	disable: boolean;
 }
 
 interface TextInputProps {
@@ -29,4 +30,5 @@ export const defaultTextInputState: TextInputStateType = {
 	error: false,
 	helperText: '',
 	label: '',
+	disable: false,
 };

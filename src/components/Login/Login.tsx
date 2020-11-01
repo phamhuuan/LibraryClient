@@ -17,6 +17,7 @@ import ERROR_CODE from '../../constants/ErrorCode';
 import {Tooltip} from '@material-ui/core';
 import CustomModal from '../Common/CustomModal';
 import NetworkErrorModal from '../Common/NetworkErrorModal';
+import {useHistory} from 'react-router-dom';
 
 const Login: FC = () => {
 	type TextInputHandleType = ElementRef<typeof TextInput>;
@@ -28,6 +29,7 @@ const Login: FC = () => {
 	const modalRef = useRef<ModalHandleType>(null);
 	const loginErrorCode = useSelector<RootReducerType, number | undefined>((state) => state.userReducer.loginErrorCode);
 	const dispatch = useDispatch();
+	const history = useHistory();
 
 	const onClickLogin = (): void => {
 		const emailInputState: TextInputStateType = emailFieldRef.current?.getTextInputState() || defaultTextInputState;
@@ -53,13 +55,17 @@ const Login: FC = () => {
 		dispatch({type: LOGIN, dataBody, keepLogin: checkboxValue});
 	};
 
+	const goToResetPassword = () => {
+		history.push('/resetPassword', {from: '/login'});
+	}
+
 	useEffect(() => {
 		if (loginErrorCode === ERROR_CODE.LOGIN_ERROR.ACCOUNT_NOT_EXSIST) {
 			const emailInputState: TextInputStateType = emailFieldRef.current?.getTextInputState() || defaultTextInputState;
-			emailFieldRef.current?.setTextInputState({...emailInputState, error: true, helperText: 'Account dose not exsist'})
+			emailFieldRef.current?.setTextInputState({...emailInputState, error: true, helperText: 'Account does not exsist'});
 		} else if (loginErrorCode === ERROR_CODE.LOGIN_ERROR.WRONG_PASSWORD) {
 			const passwordInputState: TextInputStateType = passwordFieldRef.current?.getTextInputState() || defaultTextInputState;
-			passwordFieldRef.current?.setTextInputState({...passwordInputState, error: true, helperText: 'Wrong password'})
+			passwordFieldRef.current?.setTextInputState({...passwordInputState, error: true, helperText: 'Wrong password'});
 		} else if (loginErrorCode === ERROR_CODE.LOGIN_ERROR.UNKNOW) {
 			modalRef.current?.openModal();
 		}
@@ -70,10 +76,10 @@ const Login: FC = () => {
 			<Box style={{width: 400, backgroundColor: '#eee', padding: 20}} borderRadius={20} borderColor={'primary.main'} border={2}>
 				<InputLabel style={{textAlign: 'center', fontSize: 40, fontWeight: 'bold', color: 'black'}}>Login</InputLabel>
 				<InputLabel style={{color: 'black'}}>Email address</InputLabel>
-				<TextInput ref={emailFieldRef} label={'Enter email'} style={{width: 300}} variant={'outlined'} />
+				<TextInput ref={emailFieldRef} label={'Enter email'} style={{width: '100%'}} variant={'outlined'} />
 				<InputLabel style={{color: 'black', marginTop: 10}}>Password</InputLabel>
-				<TextInput ref={passwordFieldRef} label={'Enter password'} style={{width: 300}} variant={'outlined'} type={'password'} />
-				<div>
+				<TextInput ref={passwordFieldRef} label={'Enter password'} style={{width: '100%'}} variant={'outlined'} type={'password'} />
+				<div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
 					<Tooltip title={'You will be automatic login in 7 days!'}>
 						<FormControlLabel
 							control={
@@ -82,13 +88,14 @@ const Login: FC = () => {
 							label="Keep login"
 						/>
 					</Tooltip>
+					<div style={{display: 'flex', flex: 1}} />
+					<Button onClick={goToResetPassword}>
+						<InputLabel style={{textAlign: 'center', textDecoration: 'underline'}}>Forgot password?</InputLabel>
+					</Button>
 				</div>
 				<div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
 					<Button variant="contained" color="primary" onClick={onClickLogin}>Login</Button>
 				</div>
-				{/* <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-					<Button variant="contained" color="primary" onClick={() => {modalRef.current?.openModal();}}>Show Modal</Button>
-				</div> */}
 			</Box>
 			<NetworkErrorModal ref={modalRef} />
 		</div>

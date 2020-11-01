@@ -12,6 +12,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootReducerType} from "../@types/reducer";
 import {UserType} from "../@types/entity";
 import {GET_USER_INFO_FROM_TOKEN} from "../actions/ActionType";
+import ResetPassword from "../components/ResetPassword/ResetPassword";
 
 const MainRoute: FC = () => {
 	const [state, setState] = useState<MainRouteStateType>({
@@ -64,9 +65,7 @@ const MainRoute: FC = () => {
 					{state.needLogin ? <Login /> : <Redirect to="/" />}
 				</Route>
 				<Route exact path="/resetPassword">
-					<div>
-						<p>Reset Password</p>
-					</div>
+					{state.needLogin ? <ResetPassword /> : <Redirect to="/" />}
 				</Route>
 				<Route path="*">
 					<Redirect to="/" />
