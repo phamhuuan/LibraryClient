@@ -4,7 +4,8 @@ import countReducer from './countReducer';
 
 const rootReducer = combineReducers({
 	userReducer,
-	countReducer
+	countReducer,
+	
 });
 
 export default rootReducer;

@@ -33,6 +33,7 @@ const CustomCheckbox = forwardRef<CustomCheckboxHandleType, CustomCheckboxPropsT
 			checked={state.checked}
 			color={props.color}
 			onChange={toggleCheckbox}
+			
 		/>
 	);
 });

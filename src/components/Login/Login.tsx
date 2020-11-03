@@ -17,12 +17,14 @@ import ERROR_CODE from '../../constants/ErrorCode';
 import {Tooltip} from '@material-ui/core';
 import CustomModal from '../Common/CustomModal';
 import NetworkErrorModal from '../Common/NetworkErrorModal';
+import {PlusNumber} from '../../@types/action';
  
 
 const Login: FC = () => {
 	type TextInputHandleType = ElementRef<typeof TextInput>;
 	type CheckboxHandleType = ElementRef<typeof CustomCheckbox>;
 	type ModalHandleType = ElementRef<typeof CustomModal>;
+	const numberFieldRef=useRef<TextInputHandleType>(null);
 	const emailFieldRef = useRef<TextInputHandleType>(null);
 	const passwordFieldRef = useRef<TextInputHandleType>(null);
 	const checkboxRef = useRef<CheckboxHandleType>(null);
@@ -30,10 +32,12 @@ const Login: FC = () => {
 	const loginErrorCode = useSelector<RootReducerType, number | undefined>((state) => state.userReducer.loginErrorCode);
 	const number=useSelector<RootReducerType,number>((state)=>state.countReducer.number);//lay number tu countReducer
 	const dispatch = useDispatch();
+	const numberincrease:number=2;
 
 	const onClickLogin = (): void => {
 		const emailInputState: TextInputStateType = emailFieldRef.current?.getTextInputState() || defaultTextInputState;
 		const passwordInputState: TextInputStateType = passwordFieldRef.current?.getTextInputState() || defaultTextInputState;
+		
 		const checkboxValue: boolean = checkboxRef.current?.getCheckboxValue() || false;
 		if (!checkValidEmail(emailInputState.value.trim())) {
 			if (emailInputState.value === '') {
@@ -54,14 +58,19 @@ const Login: FC = () => {
 		// dispatch action login (mo file src/saga/loginSaga.ts)
 		dispatch({type: LOGIN, dataBody, keepLogin: checkboxValue});
 	};
+	
 	 const onPlus=(): void=>{
-	 		dispatch({type: INCREASE});
+			const numberInputState: TextInputStateType=numberFieldRef.current?.getTextInputState() || defaultTextInputState;
+
+			dispatch<PlusNumber>({type: INCREASE,value: parseInt(numberInputState.value,10)});
 	 };
 	 const onMinus=():void=>{
-		 dispatch({type: DECREASE});
+		const numberInputState: TextInputStateType=numberFieldRef.current?.getTextInputState() || defaultTextInputState;
+		 dispatch({type: DECREASE, value:parseInt(numberInputState.value,10)});
 	 }
 	 const onReset=():void=>{
-		 dispatch({type: RESET});
+		const numberInputState: TextInputStateType=numberFieldRef.current?.getTextInputState() || defaultTextInputState;
+		 dispatch({type: RESET, value:parseInt(numberInputState.value,10)});
 	 }
 
 	useEffect(() => {
@@ -79,12 +88,16 @@ const Login: FC = () => {
 	return (
 		<div style={{...mainStyle.fullScreen, backgroundImage: `url(${logo})`, backgroundSize: 'cover', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
 			<Box style={{width: 400, backgroundColor: '#eee', padding: 20}} borderRadius={20} borderColor={'primary.main'} border={2}>
-				<InputLabel style={{textAlign: 'center', fontSize: 40, fontWeight: 'bold', color: 'black'}}>Login</InputLabel>
+				<InputLabel  style={{textAlign: 'center', fontSize: 40, fontWeight: 'bold', color: 'black'}}>Login</InputLabel>
+				<p >{numberincrease}</p>
 				<InputLabel style={{color: 'black'}}>Email address</InputLabel>
                
 				<TextInput ref={emailFieldRef} label={'Enter email'} style={{width: 300}} variant={'outlined'} />
 				<InputLabel style={{color: 'black', marginTop: 10}}>Password</InputLabel>
 				<TextInput ref={passwordFieldRef} label={'Enter password'} style={{width: 300}} variant={'outlined'} type={'password'} />
+				{/* string  */}
+				<InputLabel style={{color: 'black', marginTop: 10}}>Number</InputLabel>
+				<TextInput ref={numberFieldRef} label={'Enter Number'} style={{width: 300}} variant={'outlined'} type={'outlined'} />
 				<div>
 					<Tooltip title={'You will be automatic login in 7 days!'}>
 						<FormControlLabel
@@ -98,7 +111,7 @@ const Login: FC = () => {
 				<InputLabel>{number}</InputLabel>
 				<div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
 					<Button style={{marginRight: 10}} variant="contained" color="primary" onClick={onClickLogin}>Login</Button>
-					<Button style={{marginRight: 10}} variant="contained" color="primary" onClick={onPlus}>Tang</Button>
+					<Button style={{marginRight: 10}} variant="contained" color="primary" onClick={onPlus} >Tang</Button>
 					<Button style={{marginRight: 10}} variant="contained" color="primary" onClick={onMinus} >Giam</Button>
 					<Button variant="contained" color="primary" onClick={onReset}>Reset</Button>
                        

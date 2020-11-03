@@ -11,5 +11,6 @@ export const GET_USER_INFO_FROM_TOKEN_RESET_MESSAGE = 'GET_USER_INFO_FROM_TOKEN_
 
 
 export const INCREASE='INCREASE';
+export const INCREATE='INCREASE_VALUE';
 export const DECREASE='DECREASE';
 export const RESET='RESET';

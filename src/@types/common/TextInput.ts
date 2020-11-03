@@ -24,6 +24,13 @@ export interface TextInputHandleType {
 	setTextInputState: (newState: TextInputStateType) => void;
 }
 
+export interface TextInputNumberType{
+	value: number;
+}
+export interface TextInputNumber{
+	value?: number;
+}
+
 export const defaultTextInputState: TextInputStateType = {
 	value: '',
 	error: false,

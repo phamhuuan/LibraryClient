@@ -5,3 +5,9 @@ export interface UserType {
 	_id: string,
 	studentId: number,
 }
+// export interface Province{
+// 	id : number;
+// 	name: string;
+// 	checked: boolean;
+// 	population: number;
+// }
