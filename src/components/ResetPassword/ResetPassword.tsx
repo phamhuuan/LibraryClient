@@ -260,7 +260,7 @@ const ResetPassword: FC = () => {
 	), []);
 
 	return (
-		<div style={{...mainStyle.fullScreen, backgroundImage: `url(${logo})`, backgroundSize: 'cover', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+		<div style={{...mainStyle.fullScreen, backgroundImage: `url(${logo})`, backgroundSize: 'contain', backgroundPositionX: 'center', backgroundPositionY: 'center', backgroundRepeat: 'no-repeat', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
 			<Box style={{width: 400, backgroundColor: '#eee', padding: 20}} borderRadius={20} borderColor={'primary.main'} border={2}>
 				{emailField}
 				<div style={{display: 'flex', flexDirection: 'row'}}>
