@@ -4,7 +4,6 @@ interface ActionType {
 	type: string;
 }
 
-
 export interface ResetActionType extends ActionType {
 }
 
@@ -18,18 +17,4 @@ export interface LoginSuccessActionType extends ActionType {
 
 export interface GetUserInforFromTokenSuccessActionType extends ActionType {
 	user: UserType,
-}
-
-export interface PlusNumber extends ActionType{
-      value: number;
-}
-export interface MinusNumber extends ActionType{
-
-}
-export interface ResetNumber extends ActionType{
-	
-}
-export interface SetAttribute extends ActionType{
-	color: string;
-	size: number;
 }
