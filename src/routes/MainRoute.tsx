@@ -1,9 +1,9 @@
 /* tslint:disable */
-import React, {FC, useEffect, useState} from "react";
+import React, {FC, lazy, Suspense, useEffect, useState} from "react";
 import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
 import {MainRouteStateType} from "../@types/routes/MainRoute";
 import Home from "../components/Home/Home";
-import Login from "../components/Login/Login";
+// import Login from "../components/Login/Login";
 import logo from "../assets/logo.jpg";
 import mainRouteStyle from "../styles/routes/mainRouteStyle";
 import mainStyle from "../styles/mainStyle";
@@ -13,6 +13,8 @@ import {RootReducerType} from "../@types/reducer";
 import {UserType} from "../@types/entity";
 import {GET_USER_INFO_FROM_TOKEN} from "../actions/ActionType";
 import ResetPassword from "../components/ResetPassword/ResetPassword";
+
+const Login = lazy(() => import('../components/Login/Login'));
 
 const MainRoute: FC = () => {
 	const [state, setState] = useState<MainRouteStateType>({
@@ -57,20 +59,22 @@ const MainRoute: FC = () => {
 	}
 	return (
 		<BrowserRouter>
-			<Switch>
-				<Route exact path="/">
-					{state.needLogin ? <Redirect to="/login" /> : <Home />}
-				</Route>
-				<Route exact path="/login">
-					{state.needLogin ? <Login /> : <Redirect to="/" />}
-				</Route>
-				<Route exact path="/resetPassword">
-					{state.needLogin ? <ResetPassword /> : <Redirect to="/" />}
-				</Route>
-				<Route path="*">
-					<Redirect to="/" />
-				</Route>
-			</Switch>
+			<Suspense fallback={<div>Loading...</div>}>
+				<Switch>
+					<Route exact path="/">
+						{state.needLogin ? <Redirect to="/login" /> : <Home />}
+					</Route>
+					<Route exact path="/login">
+						{state.needLogin ? <Login /> : <Redirect to="/" />}
+					</Route>
+					<Route exact path="/resetPassword">
+						{state.needLogin ? <ResetPassword /> : <Redirect to="/" />}
+					</Route>
+					<Route path="*">
+						<Redirect to="/" />
+					</Route>
+				</Switch>
+			</Suspense>
 		</BrowserRouter>
 	);
 };

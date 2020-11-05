@@ -5,7 +5,7 @@ import {RootReducerType} from '../../@types/reducer';
 import {ROLE_ADMIN, ROLE_LIBRILIAN, ROLE_STUDENT} from '../../constants/Constant';
 import HomeAdmin from './HomeAdmin';
 import HomeLibrian from './HomeLibrarian';
-import HomeStudent from './HomeStudent';
+import HomeStudent from './HomeStudent/HomeStudent';
 
 const Home: FC = () => {
 	const user = useSelector<RootReducerType, UserType | undefined>((state) => state.userReducer.user);

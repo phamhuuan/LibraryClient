@@ -1,5 +1,5 @@
 import {FailActionType, GetUserInforFromTokenSuccessActionType, LoginSuccessActionType} from '../@types/action';
-import {LOGIN_SUCCESS, LOGIN_FAIL, LOGIN_RESET_MESSAGE, GET_USER_INFO_FROM_TOKEN_SUCCESS, GET_USER_INFO_FROM_TOKEN_FAIL, GET_USER_INFO_FROM_TOKEN_RESET_MESSAGE} from './../actions/ActionType';
+import {LOGIN_SUCCESS, LOGIN_FAIL, LOGIN_RESET_MESSAGE, GET_USER_INFO_FROM_TOKEN_SUCCESS, GET_USER_INFO_FROM_TOKEN_FAIL, GET_USER_INFO_FROM_TOKEN_RESET_MESSAGE, CLEAR_LOGIN_DATA} from './../actions/ActionType';
 import {UserReducerStateType} from '../@types/reducer';
 
 const initialState: UserReducerStateType = {
@@ -38,6 +38,8 @@ const userReducer = (state = initialState, action: ActionType): UserReducerState
 			state.getUserInfoFromTokenMessage = 'Get info fail';
 			state.getUserInfoFromTokenErrorCode = action.errorCode;
 			return {...state};
+		case CLEAR_LOGIN_DATA:
+			return {...state, user: undefined};
 		default:
 			return state;
 	}

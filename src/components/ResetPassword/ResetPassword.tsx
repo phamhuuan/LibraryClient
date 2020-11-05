@@ -14,7 +14,7 @@ import NetworkErrorModal from '../Common/NetworkErrorModal';
 import {useHistory, useLocation} from 'react-router-dom';
 import H from 'history';
 import Api from '../../sagas/api';
-import {ResetPasswordComponentStateType} from '../../@types/componentState';
+import {ResetPasswordComponentStateType} from '../../@types/componentState/ResetPassword';
 import {OK} from '../../constants/Constant';
 
 const ResetPassword: FC = () => {
@@ -38,7 +38,6 @@ const ResetPassword: FC = () => {
 	});
 
 	useEffect(() => {
-		console.log('hi');
 		if (location?.state?.from !== '/login') {
 			history.replace('/');
 		}
