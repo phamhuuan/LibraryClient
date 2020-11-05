@@ -1,4 +1,4 @@
-import React, {ElementRef, FC, useEffect, useRef} from 'react';
+import React, {ElementRef, FC, useEffect, useRef, useState} from 'react';
 import mainStyle from '../../styles/mainStyle';
 import logo from '../../assets/logo.jpg';
 import Box from '@material-ui/core/Box';
@@ -10,20 +10,24 @@ import Button from '@material-ui/core/Button';
 import {checkValidEmail} from '../../utils/Utils';
 import {defaultTextInputState, TextInputStateType} from '../../@types/common/TextInput';
 import {useDispatch, useSelector} from 'react-redux';
-import {LOGIN,INCREASE,DECREASE,RESET} from '../../actions/ActionType';
+import {LOGIN,INCREASE,DECREASE,RESET, SET, INCREATE} from '../../actions/ActionType';
 import {LoginDataBodyType} from '../../@types/dataBody';
 import {RootReducerType} from '../../@types/reducer';
 import ERROR_CODE from '../../constants/ErrorCode';
 import {Tooltip} from '@material-ui/core';
 import CustomModal from '../Common/CustomModal';
 import NetworkErrorModal from '../Common/NetworkErrorModal';
-import {PlusNumber} from '../../@types/action';
- 
+import {PlusNumber,SetAttribute} from '../../@types/action';
+import {LoginNumberStateType} from '../../@types/componentState/index';
+import {useHistory} from 'react-router-dom';
+import { propTypes } from 'react-bootstrap/esm/Image';
 
 const Login: FC = () => {
 	type TextInputHandleType = ElementRef<typeof TextInput>;
 	type CheckboxHandleType = ElementRef<typeof CustomCheckbox>;
 	type ModalHandleType = ElementRef<typeof CustomModal>;
+	const colorFieldRef=useRef<TextInputHandleType>(null);
+	const sizeFieldRef=useRef<TextInputHandleType>(null);
 	const numberFieldRef=useRef<TextInputHandleType>(null);
 	const emailFieldRef = useRef<TextInputHandleType>(null);
 	const passwordFieldRef = useRef<TextInputHandleType>(null);
@@ -31,8 +35,16 @@ const Login: FC = () => {
 	const modalRef = useRef<ModalHandleType>(null);
 	const loginErrorCode = useSelector<RootReducerType, number | undefined>((state) => state.userReducer.loginErrorCode);
 	const number=useSelector<RootReducerType,number>((state)=>state.countReducer.number);//lay number tu countReducer
+	// const string=useSelector<RootReducerType,string>((state)=>state.countReducer.number);
 	const dispatch = useDispatch();
-	const numberincrease:number=2;
+	const [state, setState] = useState<LoginNumberStateType>({
+		value: 1,
+		size: 40,
+		color: 'black',
+		login: 'Login'
+	});
+
+	const history = useHistory();
 
 	const onClickLogin = (): void => {
 		const emailInputState: TextInputStateType = emailFieldRef.current?.getTextInputState() || defaultTextInputState;
@@ -58,28 +70,45 @@ const Login: FC = () => {
 		// dispatch action login (mo file src/saga/loginSaga.ts)
 		dispatch({type: LOGIN, dataBody, keepLogin: checkboxValue});
 	};
-	
+	const onSet=(): void=>{
+		const colorInputState: TextInputStateType = colorFieldRef.current?.getTextInputState() || defaultTextInputState;
+		const sizeInputState: TextInputStateType = sizeFieldRef.current?.getTextInputState() || defaultTextInputState;
+		
+		setState({...state, color: colorInputState.value});
+		setState({...state,size: parseInt(sizeInputState.value,10)});
+		// console.log(colorInputState.value);
+		// console.log(parseInt(colorInputState.value,10));
+		dispatch({type: SET,color: colorInputState.value});
+	}
 	 const onPlus=(): void=>{
 			const numberInputState: TextInputStateType=numberFieldRef.current?.getTextInputState() || defaultTextInputState;
-
-			dispatch<PlusNumber>({type: INCREASE,value: parseInt(numberInputState.value,10)});
+            
+			setState({...state, value: state.value+1,color: 'red',size: state.size+2});
+			
+			dispatch({type: INCREATE,value: parseInt(numberInputState.value,10)});
 	 };
 	 const onMinus=():void=>{
 		const numberInputState: TextInputStateType=numberFieldRef.current?.getTextInputState() || defaultTextInputState;
+		setState({...state, value: state.value-1});
 		 dispatch({type: DECREASE, value:parseInt(numberInputState.value,10)});
 	 }
 	 const onReset=():void=>{
 		const numberInputState: TextInputStateType=numberFieldRef.current?.getTextInputState() || defaultTextInputState;
+		setState({...state, value:1});
 		 dispatch({type: RESET, value:parseInt(numberInputState.value,10)});
 	 }
+
+	const goToResetPassword = () => {
+		history.push('/resetPassword', {from: '/login'});
+	}
 
 	useEffect(() => {
 		if (loginErrorCode === ERROR_CODE.LOGIN_ERROR.ACCOUNT_NOT_EXSIST) {
 			const emailInputState: TextInputStateType = emailFieldRef.current?.getTextInputState() || defaultTextInputState;
-			emailFieldRef.current?.setTextInputState({...emailInputState, error: true, helperText: 'Account dose not exsist'})
+			emailFieldRef.current?.setTextInputState({...emailInputState, error: true, helperText: 'Account does not exsist'});
 		} else if (loginErrorCode === ERROR_CODE.LOGIN_ERROR.WRONG_PASSWORD) {
 			const passwordInputState: TextInputStateType = passwordFieldRef.current?.getTextInputState() || defaultTextInputState;
-			passwordFieldRef.current?.setTextInputState({...passwordInputState, error: true, helperText: 'Wrong password'})
+			passwordFieldRef.current?.setTextInputState({...passwordInputState, error: true, helperText: 'Wrong password'});
 		} else if (loginErrorCode === ERROR_CODE.LOGIN_ERROR.UNKNOW) {
 			modalRef.current?.openModal();
 		}
@@ -88,8 +117,8 @@ const Login: FC = () => {
 	return (
 		<div style={{...mainStyle.fullScreen, backgroundImage: `url(${logo})`, backgroundSize: 'cover', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
 			<Box style={{width: 400, backgroundColor: '#eee', padding: 20}} borderRadius={20} borderColor={'primary.main'} border={2}>
-				<InputLabel  style={{textAlign: 'center', fontSize: 40, fontWeight: 'bold', color: 'black'}}>Login</InputLabel>
-				<p >{numberincrease}</p>
+				<InputLabel  style={{textAlign: 'center', fontSize: state.size, fontWeight: 'bold', color: state.color}}>Login</InputLabel>
+				<p >{state.value}</p>
 				<InputLabel style={{color: 'black'}}>Email address</InputLabel>
                
 				<TextInput ref={emailFieldRef} label={'Enter email'} style={{width: 300}} variant={'outlined'} />
@@ -98,7 +127,10 @@ const Login: FC = () => {
 				{/* string  */}
 				<InputLabel style={{color: 'black', marginTop: 10}}>Number</InputLabel>
 				<TextInput ref={numberFieldRef} label={'Enter Number'} style={{width: 300}} variant={'outlined'} type={'outlined'} />
-				<div>
+				{/* <TextInput ref={emailFieldRef} label={'Enter email'} style={{width: '100%'}} variant={'outlined'} /> */}
+				<InputLabel style={{color: 'black', marginTop: 10}}>Password</InputLabel>
+				<TextInput ref={passwordFieldRef} label={'Enter password'} style={{width: '100%'}} variant={'outlined'} type={'password'} />
+				<div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
 					<Tooltip title={'You will be automatic login in 7 days!'}>
 						<FormControlLabel
 							control={
@@ -107,18 +139,40 @@ const Login: FC = () => {
 							label="Keep login"
 						/>
 					</Tooltip>
+					<div style={{display: 'flex', flex: 1}} />
+					<Button onClick={goToResetPassword}>
+						<InputLabel style={{textAlign: 'center', textDecoration: 'underline'}}>Forgot password?</InputLabel>
+					</Button>
 				</div>
 				<InputLabel>{number}</InputLabel>
 				<div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-					<Button style={{marginRight: 10}} variant="contained" color="primary" onClick={onClickLogin}>Login</Button>
+					<Button style={{marginRight: 10}} variant="contained" color="primary" onClick={onClickLogin}  >Login</Button>
 					<Button style={{marginRight: 10}} variant="contained" color="primary" onClick={onPlus} >Tang</Button>
 					<Button style={{marginRight: 10}} variant="contained" color="primary" onClick={onMinus} >Giam</Button>
 					<Button variant="contained" color="primary" onClick={onReset}>Reset</Button>
                        
 				</div>
-				{/* <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-					<Button variant="contained" color="primary" onClick={() => {modalRef.current?.openModal();}}>Show Modal</Button>
-				</div> */}
+			</Box>
+
+			<Box style={{width: 400, backgroundColor: '#eee', padding: 20}} borderRadius={20} borderColor={'primary.main'} border={2}>
+				<InputLabel  style={{textAlign: 'center', fontSize: state.size, fontWeight: 'bold', color: state.color}}>{state.login} </InputLabel>
+				<p >{state.value}</p>
+				<InputLabel style={{color: 'black'}}>Color </InputLabel>
+               
+				<TextInput ref={colorFieldRef} label={'Enter color'} style={{width: 300}} variant={'outlined'} />
+				<InputLabel  style={{color: 'black', marginTop: 10}}>Size </InputLabel>
+				<TextInput ref={sizeFieldRef} label={'Enter password'}  style={{width: 300}} variant={'outlined'} type={'outlined'} />
+				{/* string  */}
+				
+				{/* <TextInput ref={emailFieldRef} label={'Enter email'} style={{width: '100%'}} variant={'outlined'} /> */}
+				
+				
+				{/* <IabcnputLabel>{state.login}</IabcnputLabel> */}
+				<div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+					<Button style={{marginRight: 10}} variant="contained" onClick={onSet}  >SET</Button>
+					
+                       
+				</div>
 			</Box>
 
 			<NetworkErrorModal ref={modalRef} />

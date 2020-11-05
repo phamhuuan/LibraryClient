@@ -1,4 +1,4 @@
-import {LoginDataBodyType} from '../@types/dataBody';
+import {LoginDataBodyType, ResetPasswordDataBodyType, SendResetPasswordEmailDataBodyType, VerifyPasswordDataBodyType} from '../@types/dataBody';
 import {TIME_OUT_SERVICE} from './../constants/Constant';
 import {getCurrentMillisecond} from '../utils/Utils';
 import Axios from 'axios';
@@ -24,6 +24,49 @@ function *doGetMyUserInfoFromToken(token: string) {
 	const url = ApiString.URL_GetMyUserInfoFromToken + '?token=' + token;
 	console.log(url);
 	return yield handleGetRequest(url, config);
+}
+
+function *doSendResetPasswordEmail(dataBody: SendResetPasswordEmailDataBodyType) {
+	const config = {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+		},
+	};
+	return yield handlePostRequest(ApiString.URL_SendResetPasswordEmail, config, dataBody);
+}
+
+const sendResetPasswordEmail = async (dataBody: SendResetPasswordEmailDataBodyType) => {
+	const config = {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+		},
+		timeout: 10000,
+	};
+	return await handlePostRequest2(ApiString.URL_SendResetPasswordEmail, config, dataBody);
+}
+
+const verifyPassword = async (dataBody: VerifyPasswordDataBodyType) => {
+	const config = {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+		},
+		timeout: 10000,
+	};
+	return await handlePostRequest2(ApiString.URL_VerifyPassword, config, dataBody);
+}
+
+const resetPassword = async (dataBody: ResetPasswordDataBodyType) => {
+	const config = {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+		},
+		timeout: 10000,
+	};
+	return await handlePostRequest2(ApiString.URL_ResetPassword, config, dataBody);
 }
 
 function timeout(ms: number, promise: Promise<any>) {
@@ -53,6 +96,19 @@ function* handlePostRequest(urlApi: string, config: any, dataBody: any) {
 	});
 }
 
+const handlePostRequest2 = async (urlApi: string, config: any, dataBody: any) => {
+	try {
+		let startTime = getCurrentMillisecond(), endTime = 0;
+		const response = await Axios.create().post(urlApi, dataBody, config);
+		endTime = getCurrentMillisecond();
+		console.log('Timer', (endTime - startTime), "url", urlApi, 'response', response);
+		return response;
+	} catch (error) {
+		console.log("Api handlePostRequest error: " + error);
+		return null;
+	}
+}
+
 //function dùng để request lên server theo method GET
 function* handleGetRequest(urlApi: string, config: any) {
 	console.log('Url', urlApi, 'config', config);
@@ -74,6 +130,10 @@ function* handleGetRequest(urlApi: string, config: any) {
 const Api = {
 	doLoginApi,
 	doGetMyUserInfoFromToken,
+	doSendResetPasswordEmail,
+	sendResetPasswordEmail,
+	verifyPassword,
+	resetPassword,
 };
 
 export default Api;

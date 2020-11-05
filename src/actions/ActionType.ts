@@ -14,3 +14,4 @@ export const INCREASE='INCREASE';
 export const INCREATE='INCREASE_VALUE';
 export const DECREASE='DECREASE';
 export const RESET='RESET';
+export const SET='SET';

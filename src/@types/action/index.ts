@@ -29,3 +29,7 @@ export interface MinusNumber extends ActionType{
 export interface ResetNumber extends ActionType{
 	
 }
+export interface SetAttribute extends ActionType{
+	color: string;
+	size: number;
+}
