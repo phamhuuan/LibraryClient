@@ -14,7 +14,7 @@ import NetworkErrorModal from '../Common/NetworkErrorModal';
 import {useHistory, useLocation} from 'react-router-dom';
 import H from 'history';
 import Api from '../../sagas/api';
-import {ResetPasswordComponentStateType} from '../../@types/componentState';
+import {ResetPasswordComponentStateType} from '../../@types/componentState/ResetPassword';
 import {OK} from '../../constants/Constant';
 
 const ResetPassword: FC = () => {
@@ -38,7 +38,6 @@ const ResetPassword: FC = () => {
 	});
 
 	useEffect(() => {
-		console.log('hi');
 		if (location?.state?.from !== '/login') {
 			history.replace('/');
 		}
@@ -260,7 +259,7 @@ const ResetPassword: FC = () => {
 	), []);
 
 	return (
-		<div style={{...mainStyle.fullScreen, backgroundImage: `url(${logo})`, backgroundSize: 'cover', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+		<div style={{...mainStyle.fullScreen, backgroundImage: `url(${logo})`, backgroundSize: 'contain', backgroundPositionX: 'center', backgroundPositionY: 'center', backgroundRepeat: 'no-repeat', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
 			<Box style={{width: 400, backgroundColor: '#eee', padding: 20}} borderRadius={20} borderColor={'primary.main'} border={2}>
 				{emailField}
 				<div style={{display: 'flex', flexDirection: 'row'}}>

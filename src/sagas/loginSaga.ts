@@ -52,6 +52,7 @@ function *doGetMyUserInfoFromToken(action: {type: string, token: string}) {
 		const response = yield Api.doGetMyUserInfoFromToken(action.token);
 		if (response && response.data) {
 			if (response.data.status === OK) {
+				console.log(response.data);
 				yield put({type: GET_USER_INFO_FROM_TOKEN_SUCCESS, user: response.data.user});
 			} else {
 				yield put({type: GET_USER_INFO_FROM_TOKEN_FAIL, errorCode: response.data.errorCode});

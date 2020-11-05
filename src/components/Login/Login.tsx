@@ -72,8 +72,8 @@ const Login: FC = () => {
 	}, [loginErrorCode]);
 
 	return (
-		<div style={{...mainStyle.fullScreen, backgroundImage: `url(${logo})`, backgroundSize: 'cover', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-			<Box style={{width: 400, backgroundColor: '#eee', padding: 20}} borderRadius={20} borderColor={'primary.main'} border={2}>
+		<div style={{...mainStyle.fullScreen, backgroundImage: `url(${logo})`, backgroundSize: 'contain', backgroundPositionX: 'center', backgroundPositionY: 'center', backgroundRepeat: 'no-repeat', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+			<Box style={{width: 400, backgroundColor: '#eee', padding: 20, opacity: 0.95}} borderRadius={20} borderColor={'primary.main'} border={2}>
 				<InputLabel style={{textAlign: 'center', fontSize: 40, fontWeight: 'bold', color: 'black'}}>Login</InputLabel>
 				<InputLabel style={{color: 'black'}}>Email address</InputLabel>
 				<TextInput ref={emailFieldRef} label={'Enter email'} style={{width: '100%'}} variant={'outlined'} />

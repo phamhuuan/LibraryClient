@@ -4,4 +4,5 @@ export interface UserType {
 	password: string,
 	_id: string,
 	studentId: number,
+	role: string,
 }
