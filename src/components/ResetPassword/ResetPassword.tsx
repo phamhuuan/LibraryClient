@@ -16,6 +16,7 @@ import H from 'history';
 import Api from '../../sagas/api';
 import {ResetPasswordComponentStateType} from '../../@types/componentState/ResetPassword';
 import {OK} from '../../constants/Constant';
+import PathName from '../../constants/PathName';
 
 const ResetPassword: FC = () => {
 	type TextInputHandleType = ElementRef<typeof TextInput>;
@@ -38,8 +39,8 @@ const ResetPassword: FC = () => {
 	});
 
 	useEffect(() => {
-		if (location?.state?.from !== '/login') {
-			history.replace('/');
+		if (location?.state?.from !== PathName.Login) {
+			history.replace(PathName.Home);
 		}
 	}, [history, location?.state?.from]);
 

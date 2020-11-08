@@ -1,10 +1,11 @@
+import Cookies from 'js-cookie';
 import {LoginDataBodyType, ResetPasswordDataBodyType, SendResetPasswordEmailDataBodyType, VerifyPasswordDataBodyType} from '../@types/dataBody';
 import {TIME_OUT_SERVICE} from './../constants/Constant';
 import {getCurrentMillisecond} from '../utils/Utils';
 import Axios from 'axios';
 import ApiString from '../constants/ApiString';
 
-function *doLoginApi(dataBody: LoginDataBodyType) {
+function* doLoginApi(dataBody: LoginDataBodyType) {
 	const config = {
 		headers: {
 			Accept: "application/json",
@@ -14,7 +15,7 @@ function *doLoginApi(dataBody: LoginDataBodyType) {
 	return yield handlePostRequest(ApiString.URL_Login, config, dataBody);
 }
 
-function *doGetMyUserInfoFromToken(token: string) {
+function* doGetMyUserInfoFromToken(token: string) {
 	const config = {
 		headers: {
 			Accept: "application/json",
@@ -26,7 +27,7 @@ function *doGetMyUserInfoFromToken(token: string) {
 	return yield handleGetRequest(url, config);
 }
 
-function *doSendResetPasswordEmail(dataBody: SendResetPasswordEmailDataBodyType) {
+function* doSendResetPasswordEmail(dataBody: SendResetPasswordEmailDataBodyType) {
 	const config = {
 		headers: {
 			Accept: "application/json",
@@ -35,6 +36,20 @@ function *doSendResetPasswordEmail(dataBody: SendResetPasswordEmailDataBodyType)
 	};
 	return yield handlePostRequest(ApiString.URL_SendResetPasswordEmail, config, dataBody);
 }
+
+function* doGetAllGenres() {
+	const token = Cookies.get('token');
+	const config = {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: 'Bearer ' + token,
+		}
+	};
+	return yield handleGetRequest(ApiString.URL_GetAllGenres, config);
+}
+
+//
 
 const sendResetPasswordEmail = async (dataBody: SendResetPasswordEmailDataBodyType) => {
 	const config = {
@@ -131,6 +146,7 @@ const Api = {
 	doLoginApi,
 	doGetMyUserInfoFromToken,
 	doSendResetPasswordEmail,
+	doGetAllGenres,
 	sendResetPasswordEmail,
 	verifyPassword,
 	resetPassword,

@@ -14,7 +14,7 @@ import rootSaga from './sagas/rootSaga';
 const theme = createMuiTheme({      
   typography: {
     button: {
-      textTransform: 'none'
+			textTransform: 'none',
     }
   }
 });

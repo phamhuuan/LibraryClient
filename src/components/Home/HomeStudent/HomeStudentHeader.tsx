@@ -10,6 +10,7 @@ import AppBar from '@material-ui/core/AppBar';
 import {CLEAR_LOGIN_DATA} from '../../../actions/ActionType';
 import {useHistory} from 'react-router-dom';
 import Cookies from 'js-cookie';
+import {ClearLoginDataActionType} from '../../../@types/action';
 
 const HomeStudentHeader: FC = () => {
 	const user = useSelector<RootReducerType, UserType | undefined>((state) => state.userReducer.user);
@@ -23,7 +24,7 @@ const HomeStudentHeader: FC = () => {
 
 	const onClickLogout = () => {
 		Cookies.remove('token');
-		dispatch({type: CLEAR_LOGIN_DATA});
+		dispatch<ClearLoginDataActionType>({type: CLEAR_LOGIN_DATA});
 		history.replace('/login');
 	};
 
@@ -34,7 +35,7 @@ const HomeStudentHeader: FC = () => {
 	return (
 		<div>
 			<AppBar position='static' style={{display: 'flex', flexDirection: 'row', alignItems: 'center', boxShadow: 'none', backgroundColor: 'bisque'}}>
-				<InputLabel style={{fontSize: 30, fontStyle: 'italic', color: 'black', marginLeft: 10}}>{'Pendulous ducks library'}</InputLabel>
+				<InputLabel style={{fontSize: 30, fontStyle: 'italic', color: 'black', marginLeft: 10}}>{'Swaying ducks library'}</InputLabel>
 				<div style={{display: 'flex', flex: 1}} />
 				<Button aria-controls="simple-menu" aria-haspopup="menu" onClick={handleClick}>
 					<InputLabel style={{fontSize: 30, fontWeight: 'bold', color: 'black', marginRight: 10}}>{'Hello ' + user?.name}</InputLabel>

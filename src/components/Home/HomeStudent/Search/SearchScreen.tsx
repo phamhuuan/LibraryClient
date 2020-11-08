@@ -1,6 +1,5 @@
 import {Button, InputLabel, MenuItem, Menu} from '@material-ui/core';
 import React, {FC} from 'react';
-import TextInput from '../../../Common/TextInput';
 
 const authorOptions = [
 	'Contain',

@@ -1,4 +1,4 @@
-import {UserType} from '../entity';
+import {GenreType, UserType} from '../entity';
 
 export interface UserReducerStateType {
 	user?: UserType;
@@ -8,6 +8,13 @@ export interface UserReducerStateType {
 	getUserInfoFromTokenErrorCode: number | undefined;
 }
 
+export interface GenresReducerStateType {
+	data: GenreType[];
+	getGenresMessage: string;
+	getGenreErrorCode: number | undefined;
+}
+
 export interface RootReducerType {
 	userReducer: UserReducerStateType;
+	genresReducer: GenresReducerStateType;
 }

@@ -1,5 +1,5 @@
-const PREFIX = 'https://library-sevice.herokuapp.com';
-// const PREFIX = 'http://localhost:4000';
+// const PREFIX = 'https://library-sevice.herokuapp.com';
+const PREFIX = 'http://localhost:4000';
 
 const ApiString = {
 	URL_Login: PREFIX + '/login',
@@ -7,6 +7,7 @@ const ApiString = {
 	URL_SendResetPasswordEmail: PREFIX + '/sendResetPasswordEmail',
 	URL_VerifyPassword: PREFIX + '/verifyPassword',
 	URL_ResetPassword: PREFIX + '/resetPassword',
+	URL_GetAllGenres: PREFIX + '/getGenres',
 };
 
 export default ApiString;
