@@ -1,4 +1,3 @@
-import { Button } from '@material-ui/core';
 import {makeStyles, Theme, createStyles} from '@material-ui/core/styles';
 import React, {ChangeEvent, ElementRef, FC, ReactNode, useCallback, useEffect, useRef, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
@@ -10,7 +9,9 @@ import {GET_ALL_GENRES, GET_ALL_GENRES_FAIL, GET_ALL_GENRES_SUCCESS} from '../..
 import useWindowDimensions, {WindowDimensionsType} from '../../../../hooks/useWindowDimensions';
 import CustomModal from '../../../Common/CustomModal';
 import Loading from '../../../Common/Loading';
+import NetworkErrorModal from '../../../Common/NetworkErrorModal';
 import TextInput from '../../../Common/TextInput';
+import GenreItem from './GenreItem';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -29,12 +30,13 @@ const AuthorsListGenres: FC = () => {
 	const genresData = useSelector<RootReducerType, GenreType[]>((state) => state.genresReducer.data);
 	const getGenresMessage = useSelector<RootReducerType, string>((state) => state.genresReducer.getGenresMessage);
 	type TextInputHandleType = ElementRef<typeof TextInput>;
-	type LoadingModalHandleType = ElementRef<typeof CustomModal>;
+	type ModalHandleType = ElementRef<typeof CustomModal>;
 	const searchGenreInputRef = useRef<TextInputHandleType>(null);
-	const loadingModalRef = useRef<LoadingModalHandleType>(null);
+	const loadingModalRef = useRef<ModalHandleType>(null);
+	const networkErrorModalRef = useRef<ModalHandleType>(null);
 	const divElementRef = useRef<HTMLDivElement>(null);
 	const {width}: WindowDimensionsType = useWindowDimensions();
-	const [filterData, setFilterData] = useState<GenreType[][]>([]);
+	const [filterData, setFilterData] = useState<GenreType[][]>([[]]);
 
 	const updateFilterData = useCallback((data: GenreType[]) => {
 		if (data.length === 0) {
@@ -71,6 +73,7 @@ const AuthorsListGenres: FC = () => {
 			loadingModalRef.current?.closeModal();
 		} else if (getGenresMessage === GET_ALL_GENRES_FAIL) {
 			loadingModalRef.current?.closeModal();
+			networkErrorModalRef.current?.openModal();
 		}
 	}, [genresData, getGenresMessage, updateFilterData]);
 
@@ -91,11 +94,7 @@ const AuthorsListGenres: FC = () => {
 					{filterData.map((genres: GenreType[], index: number): ReactNode =>  (
 						<div key={index} style={{display: 'flex', flex: 1, flexDirection: 'column', marginRight: index !== filterData.length - 1 ? 10 : 0, marginLeft: index !== 0 ? 10 : 0}}>
 							{genres.map((genre: GenreType, index: number): ReactNode => (
-								<Button style={{display: 'flex', paddingLeft: 5, paddingRight: 5, backgroundColor: 'wheat', paddingTop: 10, paddingBottom: 10, marginTop: 10}} key={index}>
-									<div style={{display: 'flex', alignItems: 'center', flex: 1}}>
-										{genre.name}
-									</div>
-								</Button>
+								<GenreItem genre={genre} key={index} />
 							))}
 						</div>
 					))}
@@ -103,6 +102,7 @@ const AuthorsListGenres: FC = () => {
 				<CustomModal ref={loadingModalRef} open className={style.paper}>
 					<Loading />
 				</CustomModal>
+				<NetworkErrorModal ref={networkErrorModalRef} />
 			</div>
 		</div>
 	);

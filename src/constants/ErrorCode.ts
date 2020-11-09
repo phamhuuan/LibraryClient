@@ -33,6 +33,10 @@ const ERROR_CODE = {
 	GET_GENRES_ERROR: {
 		UNKNOW: -1,
 	},
+	GET_AUTHOR_BY_GENRE_ERROR: {
+		UNKNOW: -1,
+		GENRE_NOT_FOUND: 0,
+	},
 };
 
 export default ERROR_CODE;

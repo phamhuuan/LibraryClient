@@ -8,6 +8,7 @@ const ApiString = {
 	URL_VerifyPassword: PREFIX + '/verifyPassword',
 	URL_ResetPassword: PREFIX + '/resetPassword',
 	URL_GetAllGenres: PREFIX + '/getGenres',
+	URL_GetAuthorsByGenreId: PREFIX + '/getAuthorByGenreId',
 };
 
 export default ApiString;

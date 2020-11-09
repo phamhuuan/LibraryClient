@@ -14,3 +14,12 @@ export interface GenreType {
 	name: string;
 	genreId: string;
 }
+
+export interface AuthorType {
+	_id: string;
+	authorId: string;
+	genreId: string;
+	key: string;
+	name: string;
+	biography: string;
+}
