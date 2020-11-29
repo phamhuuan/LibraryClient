@@ -37,6 +37,10 @@ const ERROR_CODE = {
 		UNKNOW: -1,
 		GENRE_NOT_FOUND: 0,
 	},
+	GET_AUTHOR_INFO_ERROR: {
+		UNKNOW: -1,
+		AUTHOR_NOT_EXSIST: 0,
+	},
 };
 
 export default ERROR_CODE;

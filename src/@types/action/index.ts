@@ -1,4 +1,4 @@
-import {GenreType, UserType} from '../entity';
+import {AuthorType, GenreType, UserType} from '../entity';
 
 /**
  * Common type
@@ -46,3 +46,21 @@ export interface GetGenresSuccessActionType extends ActionType {
 }
 
 export type GenresReducerActionType = GetGenresActionType & GetGenresSuccessActionType & FailActionType & ResetActionType;
+
+export interface GetAuthorsByGenreIdActionType extends ActionType {
+	genreId: string;
+	lastId: string;
+	lastName: string;
+	limit?: number;
+	searchString?: string;
+	resetData: boolean;
+}
+
+export interface GetAuthorsByGenreIdSuccessActionType extends ActionType {
+	authors: AuthorType[];
+	hasMore: boolean;
+	currentGenreId: string;
+	resetData: boolean;
+}
+
+export type AuthorsReducerActionType = GetAuthorsByGenreIdSuccessActionType & FailActionType & ResetActionType;

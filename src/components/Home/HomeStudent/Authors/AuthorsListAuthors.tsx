@@ -1,26 +1,21 @@
 import {Button} from '@material-ui/core';
 import {makeStyles, Theme, createStyles} from '@material-ui/core/styles';
-import {AxiosResponse} from 'axios';
 import React, {ChangeEvent, ElementRef, FC, ReactNode, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import {useHistory, useParams} from 'react-router';
+import {GetAuthorsByGenreIdActionType} from '../../../../@types/action';
 import {defaultTextInputState, TextInputStateType} from '../../../../@types/common/TextInput';
 import {AuthorType} from '../../../../@types/entity';
-import {OK} from '../../../../constants/Constant';
+import {RootReducerType} from '../../../../@types/reducer';
+import {GET_AUTHORS_BY_GENRE_ID, GET_AUTHORS_BY_GENRE_ID_FAIL, GET_AUTHORS_BY_GENRE_ID_SUCCESS} from '../../../../actions/ActionType';
 import ERROR_CODE from '../../../../constants/ErrorCode';
 import PathName from '../../../../constants/PathName';
 import useWindowDimensions, {WindowDimensionsType} from '../../../../hooks/useWindowDimensions';
-import Api from '../../../../sagas/api';
 import CustomModal from '../../../Common/CustomModal';
 import Loading from '../../../Common/Loading';
 import NetworkErrorModal from '../../../Common/NetworkErrorModal';
 import TextInput from '../../../Common/TextInput';
 import AuthorItem from './AuthorItem';
-
-type CharType = {
-	text: string;
-	key: string;
-}
-const character: CharType[] = [{text: 'All', key: ''}, {text: 'A', key: 'A'}, {text: 'B', key: 'B'}, {text: 'C', key: 'C'}, {text: 'D', key: 'D'}, {text: 'E', key: 'E'}, {text: 'F', key: 'F'}, {text: 'G', key: 'G'}, {text: 'H', key: 'H'}, {text: 'I', key: 'I'}, {text: 'J', key: 'J'}, {text: 'K', key: 'K'}, {text: 'L', key: 'L'}, {text: 'M', key: 'M'}, {text: 'N', key: 'N'}, {text: 'O', key: 'O'}, {text: 'P', key: 'P'}, {text: 'Q', key: 'Q'}, {text: 'R', key: 'R'}, {text: 'S', key: 'S'}, {text: 'T', key: 'T'}, {text: 'U', key: 'U'}, {text: 'V', key: 'V'}, {text: 'W', key: 'W'}, {text: 'X', key: 'X'}, {text: 'Y', key: 'Y'}, {text: 'Z', key: 'Z'}];
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -35,6 +30,12 @@ const useStyles = makeStyles((theme: Theme) =>
 const AuthorsListAuthors: FC = () => {
 	const style = useStyles();
 	const history = useHistory();
+	const dispatch = useDispatch();
+	const authorData = useSelector<RootReducerType, AuthorType[]>((state) => state.authorsReducer.data);
+	const hasMoreAuthor = useSelector<RootReducerType, boolean>((state) => state.authorsReducer.hasMore);
+	const getAuthorsByGenreIdMessage = useSelector<RootReducerType, string>((state) => state.authorsReducer.getAuthorsByGenreIdMessage);
+	const currentGenreId = useSelector<RootReducerType, string>((state) => state.authorsReducer.currentGenreId);
+	const getAuthorsByGenreIdErrorCode = useSelector<RootReducerType, number | undefined>((state) => state.authorsReducer.getAuthorsByGenreIdErrorCode);
 	type ParamsType = {
 		genreId: string;
 	}
@@ -46,7 +47,6 @@ const AuthorsListAuthors: FC = () => {
 	const networkErrorModalRef = useRef<ModalHandleType>(null);
 	const divElementRef = useRef<HTMLDivElement>(null);
 	const {width}: WindowDimensionsType = useWindowDimensions();
-	const [authorData, setAuthorData] = useState<AuthorType[]>([]);
 	const [filterData, setFilterData] = useState<AuthorType[][]>([[]]);
 
 	const updateFilterData = useCallback((data: AuthorType[]) => {
@@ -69,25 +69,25 @@ const AuthorsListAuthors: FC = () => {
 	}, []);
 
 	useEffect(() => {
-		const getAuthorData = async () => {
-			const response: AxiosResponse<any> | null= await Api.getAuthorsByGenreId(genreId);
-			if (response && response.data) {
-				if (response.data.status === OK) {
-					setAuthorData(response.data.authors);
-					loadingModalRef.current?.closeModal();
-				} else {
-					if (response.data.errorCode === ERROR_CODE.GET_AUTHOR_BY_GENRE_ERROR.GENRE_NOT_FOUND) {
-						history.replace(PathName.Authors);
-					} else {
-						networkErrorModalRef.current?.openModal();
-					}
-				}
+		if (getAuthorsByGenreIdMessage === GET_AUTHORS_BY_GENRE_ID_SUCCESS) {
+			loadingModalRef.current?.closeModal();
+			setFilterData(updateFilterData(authorData));
+		} else if (getAuthorsByGenreIdMessage === GET_AUTHORS_BY_GENRE_ID_FAIL && getAuthorsByGenreIdErrorCode) {
+			loadingModalRef.current?.closeModal();
+			if (getAuthorsByGenreIdErrorCode === ERROR_CODE.GET_AUTHOR_BY_GENRE_ERROR.GENRE_NOT_FOUND) {
+				history.replace(PathName.Authors + '/' + genreId);
 			} else {
 				networkErrorModalRef.current?.openModal();
 			}
 		}
-		getAuthorData()
-	}, [genreId, history]);
+	}, [authorData, genreId, getAuthorsByGenreIdErrorCode, getAuthorsByGenreIdMessage, history, updateFilterData]);
+
+	useEffect(() => {
+		if (currentGenreId !== genreId) {
+			loadingModalRef.current?.openModal();
+			dispatch<GetAuthorsByGenreIdActionType>({type: GET_AUTHORS_BY_GENRE_ID, genreId, lastId: '', lastName: '', limit: 20, resetData: true})
+		}
+	}, [currentGenreId, dispatch, genreId]);
 
 	useEffect(() => {
 		setFilterData(updateFilterData(authorData));
@@ -116,8 +116,12 @@ const AuthorsListAuthors: FC = () => {
 	const onChange = useCallback((event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
 		const searchAuthorInputState: TextInputStateType = searchAuthorInputRef.current?.getTextInputState() || defaultTextInputState;
 		searchAuthorInputRef.current?.setTextInputState({...searchAuthorInputState, value: event.target.value});
-		const searchText = new RegExp(event.target.value, 'i');
-		setFilterData(updateFilterData(authorData.filter((author: AuthorType) => searchText.test(author.name))));
+		try {
+			const searchText = new RegExp(event.target.value, 'i');
+			setFilterData(updateFilterData(authorData.filter((author: AuthorType) => searchText.test(author.name))));
+		} catch (error) {
+			console.log(error);
+		}
 	}, [authorData, updateFilterData]);
 
 	const searchInput = useMemo((): ReactNode => (
@@ -138,6 +142,20 @@ const AuthorsListAuthors: FC = () => {
 		</div>
 	), [filterData]);
 
+	const getMoreAuthor = useCallback(() => {
+		loadingModalRef.current?.openModal();
+		dispatch<GetAuthorsByGenreIdActionType>({type: GET_AUTHORS_BY_GENRE_ID, genreId, lastId: authorData[authorData.length - 1].authorId, lastName: authorData[authorData.length - 1].name, limit: 20, resetData: false})
+	}, [authorData, dispatch, genreId]);
+
+	const seeMoreButton = useMemo((): ReactNode => {
+		if (!hasMoreAuthor) return <div />;
+		return (
+			<div style={{display: 'flex', alignItems: 'center', marginBottom: 15, justifyContent: 'center'}}>
+				<Button onClick={getMoreAuthor} variant={'contained'} color={'primary'} style={{paddingLeft: 50, paddingRight: 50, fontSize: 20}}>See more</Button>
+			</div>
+		);
+	}, [getMoreAuthor, hasMoreAuthor]);
+
 	return (
 		<div style={{display: 'flex', flex: 1, height: '100%', overflowY: 'auto'}}>
 			<div ref={divElementRef} style={{display: 'flex', flex: 1, marginLeft: 20, marginRight: 20, flexDirection: 'column'}}>
@@ -146,6 +164,7 @@ const AuthorsListAuthors: FC = () => {
 				{authorDataView}
 				{loadingModal}
 				{networkErrorModal}
+				{seeMoreButton}
 			</div>
 		</div>
 	);

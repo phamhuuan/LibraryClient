@@ -38,16 +38,16 @@ const Login: FC = () => {
 		if (!checkValidEmail(emailInputState.value.trim())) {
 			if (emailInputState.value === '') {
 				// neu email la ''
-				emailFieldRef.current?.setTextInputState({...emailInputState, helperText: 'Enter an email', error: true});
+				emailFieldRef.current?.setTextInputState({helperText: 'Enter an email', error: true});
 				return;
 			} else {
 				// neu email khong hop le
-				emailFieldRef.current?.setTextInputState({...emailInputState, helperText: 'Invalid email address', error: true});
+				emailFieldRef.current?.setTextInputState({helperText: 'Invalid email address', error: true});
 				return;
 			}
 		}
 		if (passwordInputState.value === '') {
-			passwordFieldRef.current?.setTextInputState({...passwordInputState, helperText: 'Enter a password', error: true});
+			passwordFieldRef.current?.setTextInputState({helperText: 'Enter a password', error: true});
 			return;
 		}
 		const dataBody: LoginDataBodyType = {email: emailInputState.value.trim(), password: passwordInputState.value};
@@ -61,11 +61,9 @@ const Login: FC = () => {
 
 	useEffect(() => {
 		if (loginErrorCode === ERROR_CODE.LOGIN_ERROR.ACCOUNT_NOT_EXSIST) {
-			const emailInputState: TextInputStateType = emailFieldRef.current?.getTextInputState() || defaultTextInputState;
-			emailFieldRef.current?.setTextInputState({...emailInputState, error: true, helperText: 'Account does not exsist'});
+			emailFieldRef.current?.setTextInputState({error: true, helperText: 'Account does not exsist'});
 		} else if (loginErrorCode === ERROR_CODE.LOGIN_ERROR.WRONG_PASSWORD) {
-			const passwordInputState: TextInputStateType = passwordFieldRef.current?.getTextInputState() || defaultTextInputState;
-			passwordFieldRef.current?.setTextInputState({...passwordInputState, error: true, helperText: 'Wrong password'});
+			passwordFieldRef.current?.setTextInputState({error: true, helperText: 'Wrong password'});
 		} else if (loginErrorCode === ERROR_CODE.LOGIN_ERROR.UNKNOW) {
 			modalRef.current?.openModal();
 		}

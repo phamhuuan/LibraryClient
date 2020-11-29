@@ -17,9 +17,23 @@ export interface GenreType {
 
 export interface AuthorType {
 	_id: string;
+	avatar: string[];
 	authorId: string;
 	genreId: string;
 	key: string;
 	name: string;
 	biography: string;
+}
+
+export interface BookResponseType {
+	_id: string;
+	authorIdArr: string[];
+	name: string;
+	publishDate: string;
+	location: number;
+	amount: number;
+	genreId: string;
+	images: string[];
+	authors: AuthorType[];
+	genre: GenreType[];
 }

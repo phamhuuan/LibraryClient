@@ -35,10 +35,10 @@ const HomeStudentHeader: FC = () => {
 	return (
 		<div>
 			<AppBar position='static' style={{display: 'flex', flexDirection: 'row', alignItems: 'center', boxShadow: 'none', backgroundColor: 'bisque'}}>
-				<InputLabel style={{fontSize: 30, fontStyle: 'italic', color: 'black', marginLeft: 10}}>{'Swaying ducks library'}</InputLabel>
+				<InputLabel style={{fontSize: '3vw', fontStyle: 'italic', color: 'black', marginLeft: 10}}>{'Swaying ducks library'}</InputLabel>
 				<div style={{display: 'flex', flex: 1}} />
 				<Button aria-controls="simple-menu" aria-haspopup="menu" onClick={handleClick}>
-					<InputLabel style={{fontSize: 30, fontWeight: 'bold', color: 'black', marginRight: 10}}>{'Hello ' + user?.name}</InputLabel>
+					<InputLabel style={{fontSize: '3vw', fontWeight: 'bold', color: 'black', marginRight: 10}}>{'Hello ' + user?.name}</InputLabel>
 				</Button>
 				<Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
 					<MenuItem onClick={onClickLogout}>Change password</MenuItem>

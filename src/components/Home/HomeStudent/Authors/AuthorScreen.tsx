@@ -1,5 +1,6 @@
 import React, {FC} from 'react';
 import {useParams} from 'react-router-dom';
+import AuthorDetail from './AuthorDetail';
 import AuthorsListAuthors from './AuthorsListAuthors';
 import AuthorsListGenres from './AuthorsListGenres';
 
@@ -14,7 +15,7 @@ const AuthorScreen: FC = () => {
 	} else if (authorId === undefined) {
 		return <AuthorsListAuthors />;
 	} else {
-		return <div />;
+		return <AuthorDetail />;
 	}
 }
 

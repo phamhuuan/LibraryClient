@@ -8,6 +8,14 @@ export interface TextInputStateType {
 	disable: boolean;
 }
 
+export interface TextInputSetStateType {
+	value?: string;
+	error?: boolean;
+	helperText?: string;
+	type?: string;
+	disable?: boolean;
+}
+
 interface TextInputProps {
 	value?: string;
 	id?: string;
@@ -21,7 +29,7 @@ export type TextInputPropsType = TextInputProps & TextFieldProps;
 
 export interface TextInputHandleType {
 	getTextInputState: () => TextInputStateType;
-	setTextInputState: (newState: TextInputStateType) => void;
+	setTextInputState: (newState: TextInputSetStateType) => void;
 }
 
 export const defaultTextInputState: TextInputStateType = {

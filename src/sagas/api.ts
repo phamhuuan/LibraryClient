@@ -48,6 +48,28 @@ function* doGetAllGenres() {
 	return yield handleGetRequest(ApiString.URL_GetAllGenres, config);
 }
 
+function* doGetAuthorsByGenreId(genreId: string, lastId: string, lastName: string, limit?: number, regex?: string) {
+	const token = Cookies.get('token');
+	const config: AxiosRequestConfig = {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: 'Bearer ' + token,
+		},
+		timeout: 10000,
+	};
+	let url: string = ApiString.URL_GetAuthorsByGenreId + '?genreId=' + genreId;
+	url += '&lastId=' + lastId;
+	url += '&lastName=' + lastName;
+	if (limit) {
+		url += '&limit=' + limit;
+	}
+	if (regex) {
+		url += '&regex=' + regex;
+	}
+	return yield handleGetRequest(url, config);
+}
+
 //
 
 const sendResetPasswordEmail = async (dataBody: SendResetPasswordEmailDataBodyType) => {
@@ -83,7 +105,7 @@ const resetPassword = async (dataBody: ResetPasswordDataBodyType) => {
 	return await handlePostRequest2(ApiString.URL_ResetPassword, config, dataBody);
 }
 
-const getAuthorsByGenreId = async (genreId: string) => {
+const getAuthorInfo = async (authorId: string) => {
 	const token = Cookies.get('token');
 	const config: AxiosRequestConfig = {
 		headers: {
@@ -93,7 +115,21 @@ const getAuthorsByGenreId = async (genreId: string) => {
 		},
 		timeout: 10000,
 	};
-	const url: string = ApiString.URL_GetAuthorsByGenreId + '?genreId=' + genreId;
+	const url = `${ApiString.URL_GetAuthorInfo}?authorId=${authorId}`;
+	return await handleGetRequest2(url, config);
+}
+
+const getBooks = async (searchString: string, page: number) => {
+	const token = Cookies.get('token');
+	const config: AxiosRequestConfig = {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: 'Bearer ' + token,
+		},
+		timeout: 10000,
+	};
+	const url = `${ApiString.URL_GetBooks}?searchString=${searchString}&page=${page}`;
 	return await handleGetRequest2(url, config);
 }
 
@@ -173,10 +209,12 @@ const Api = {
 	doGetMyUserInfoFromToken,
 	doSendResetPasswordEmail,
 	doGetAllGenres,
+	doGetAuthorsByGenreId,
 	sendResetPasswordEmail,
 	verifyPassword,
 	resetPassword,
-	getAuthorsByGenreId,
+	getAuthorInfo,
+	getBooks,
 };
 
 export default Api;

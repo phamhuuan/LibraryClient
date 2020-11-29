@@ -10,6 +10,7 @@ import TextField from "@material-ui/core/TextField";
 import {
 	TextInputHandleType,
 	TextInputPropsType,
+	TextInputSetStateType,
 	TextInputStateType
 } from '../../@types/common/TextInput'
 import '../../styles/css/index.css';
@@ -28,7 +29,7 @@ const TextInput = forwardRef<TextInputHandleType, TextInputPropsType>((props, re
 		return state;
 	}, [state]);
 
-	const setTextInputState = useCallback((newState: TextInputStateType): void => {
+	const setTextInputState = useCallback((newState: TextInputSetStateType): void => {
 		setState({...state, ...newState});
 	}, [state]);
 
