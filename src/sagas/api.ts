@@ -1,10 +1,11 @@
+import Cookies from 'js-cookie';
 import {LoginDataBodyType, ResetPasswordDataBodyType, SendResetPasswordEmailDataBodyType, VerifyPasswordDataBodyType} from '../@types/dataBody';
 import {TIME_OUT_SERVICE} from './../constants/Constant';
 import {getCurrentMillisecond} from '../utils/Utils';
-import Axios from 'axios';
+import Axios, { AxiosRequestConfig } from 'axios';
 import ApiString from '../constants/ApiString';
 
-function *doLoginApi(dataBody: LoginDataBodyType) {
+function* doLoginApi(dataBody: LoginDataBodyType) {
 	const config = {
 		headers: {
 			Accept: "application/json",
@@ -14,20 +15,19 @@ function *doLoginApi(dataBody: LoginDataBodyType) {
 	return yield handlePostRequest(ApiString.URL_Login, config, dataBody);
 }
 
-function *doGetMyUserInfoFromToken(token: string) {
-	const config = {
+function* doGetMyUserInfoFromToken(token: string) {
+	const config: AxiosRequestConfig = {
 		headers: {
 			Accept: "application/json",
 			"Content-Type": "application/json",
 		}
 	};
-	const url = ApiString.URL_GetMyUserInfoFromToken + '?token=' + token;
-	console.log(url);
+	const url: string = ApiString.URL_GetMyUserInfoFromToken + '?token=' + token;
 	return yield handleGetRequest(url, config);
 }
 
-function *doSendResetPasswordEmail(dataBody: SendResetPasswordEmailDataBodyType) {
-	const config = {
+function* doSendResetPasswordEmail(dataBody: SendResetPasswordEmailDataBodyType) {
+	const config: AxiosRequestConfig = {
 		headers: {
 			Accept: "application/json",
 			"Content-Type": "application/json",
@@ -36,8 +36,44 @@ function *doSendResetPasswordEmail(dataBody: SendResetPasswordEmailDataBodyType)
 	return yield handlePostRequest(ApiString.URL_SendResetPasswordEmail, config, dataBody);
 }
 
+function* doGetAllGenres() {
+	const token = Cookies.get('token');
+	const config: AxiosRequestConfig = {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: 'Bearer ' + token,
+		}
+	};
+	return yield handleGetRequest(ApiString.URL_GetAllGenres, config);
+}
+
+function* doGetAuthorsByGenreId(genreId: string, lastId: string, lastName: string, limit?: number, regex?: string) {
+	const token = Cookies.get('token');
+	const config: AxiosRequestConfig = {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: 'Bearer ' + token,
+		},
+		timeout: 10000,
+	};
+	let url: string = ApiString.URL_GetAuthorsByGenreId + '?genreId=' + genreId;
+	url += '&lastId=' + lastId;
+	url += '&lastName=' + lastName;
+	if (limit) {
+		url += '&limit=' + limit;
+	}
+	if (regex) {
+		url += '&regex=' + regex;
+	}
+	return yield handleGetRequest(url, config);
+}
+
+//
+
 const sendResetPasswordEmail = async (dataBody: SendResetPasswordEmailDataBodyType) => {
-	const config = {
+	const config: AxiosRequestConfig = {
 		headers: {
 			Accept: "application/json",
 			"Content-Type": "application/json",
@@ -48,7 +84,7 @@ const sendResetPasswordEmail = async (dataBody: SendResetPasswordEmailDataBodyTy
 }
 
 const verifyPassword = async (dataBody: VerifyPasswordDataBodyType) => {
-	const config = {
+	const config: AxiosRequestConfig = {
 		headers: {
 			Accept: "application/json",
 			"Content-Type": "application/json",
@@ -59,7 +95,7 @@ const verifyPassword = async (dataBody: VerifyPasswordDataBodyType) => {
 }
 
 const resetPassword = async (dataBody: ResetPasswordDataBodyType) => {
-	const config = {
+	const config: AxiosRequestConfig = {
 		headers: {
 			Accept: "application/json",
 			"Content-Type": "application/json",
@@ -67,6 +103,34 @@ const resetPassword = async (dataBody: ResetPasswordDataBodyType) => {
 		timeout: 10000,
 	};
 	return await handlePostRequest2(ApiString.URL_ResetPassword, config, dataBody);
+}
+
+const getAuthorInfo = async (authorId: string) => {
+	const token = Cookies.get('token');
+	const config: AxiosRequestConfig = {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: 'Bearer ' + token,
+		},
+		timeout: 10000,
+	};
+	const url = `${ApiString.URL_GetAuthorInfo}?authorId=${authorId}`;
+	return await handleGetRequest2(url, config);
+}
+
+const getBooks = async (searchString: string, page: number) => {
+	const token = Cookies.get('token');
+	const config: AxiosRequestConfig = {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: 'Bearer ' + token,
+		},
+		timeout: 10000,
+	};
+	const url = `${ApiString.URL_GetBooks}?searchString=${searchString}&page=${page}`;
+	return await handleGetRequest2(url, config);
 }
 
 function timeout(ms: number, promise: Promise<any>) {
@@ -79,7 +143,7 @@ function timeout(ms: number, promise: Promise<any>) {
 }
 
 //function dùng để request lên server theo method POST
-function* handlePostRequest(urlApi: string, config: any, dataBody: any) {
+function* handlePostRequest(urlApi: string, config: AxiosRequestConfig, dataBody: any) {
 	console.log('Url', urlApi, 'config', config, 'body', dataBody);
 	let startTime = getCurrentMillisecond();
 	let endTime = 0;
@@ -96,7 +160,7 @@ function* handlePostRequest(urlApi: string, config: any, dataBody: any) {
 	});
 }
 
-const handlePostRequest2 = async (urlApi: string, config: any, dataBody: any) => {
+const handlePostRequest2 = async (urlApi: string, config: AxiosRequestConfig, dataBody: any) => {
 	try {
 		let startTime = getCurrentMillisecond(), endTime = 0;
 		const response = await Axios.create().post(urlApi, dataBody, config);
@@ -110,7 +174,7 @@ const handlePostRequest2 = async (urlApi: string, config: any, dataBody: any) =>
 }
 
 //function dùng để request lên server theo method GET
-function* handleGetRequest(urlApi: string, config: any) {
+function* handleGetRequest(urlApi: string, config: AxiosRequestConfig) {
 	console.log('Url', urlApi, 'config', config);
 	let startTime = getCurrentMillisecond();
 	let endTime = 0;
@@ -127,13 +191,30 @@ function* handleGetRequest(urlApi: string, config: any) {
 	});
 }
 
+const handleGetRequest2 = async (urlApi: string, config: AxiosRequestConfig) => {
+	try {
+		let startTime = getCurrentMillisecond(), endTime = 0;
+		const response = await Axios.create().get(urlApi, config);
+		endTime = getCurrentMillisecond();
+		console.log('Timer', (endTime - startTime), "url", urlApi, 'response', response);
+		return response;
+	} catch (error) {
+		console.log("Api handlePostRequest error: " + error);
+		return null;
+	}
+}
+
 const Api = {
 	doLoginApi,
 	doGetMyUserInfoFromToken,
 	doSendResetPasswordEmail,
+	doGetAllGenres,
+	doGetAuthorsByGenreId,
 	sendResetPasswordEmail,
 	verifyPassword,
 	resetPassword,
+	getAuthorInfo,
+	getBooks,
 };
 
 export default Api;

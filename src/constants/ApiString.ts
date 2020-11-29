@@ -7,6 +7,10 @@ const ApiString = {
 	URL_SendResetPasswordEmail: PREFIX + '/sendResetPasswordEmail',
 	URL_VerifyPassword: PREFIX + '/verifyPassword',
 	URL_ResetPassword: PREFIX + '/resetPassword',
+	URL_GetAllGenres: PREFIX + '/getGenres',
+	URL_GetAuthorsByGenreId: PREFIX + '/getAuthorByGenreId',
+	URL_GetAuthorInfo: PREFIX + '/getAuthorInfo',
+	URL_GetBooks: PREFIX + '/getBooks',
 };
 
 export default ApiString;

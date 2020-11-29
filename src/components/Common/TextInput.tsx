@@ -1,4 +1,5 @@
 import React, {
+	ChangeEvent,
 	forwardRef,
 	useCallback,
 	useEffect,
@@ -9,6 +10,7 @@ import TextField from "@material-ui/core/TextField";
 import {
 	TextInputHandleType,
 	TextInputPropsType,
+	TextInputSetStateType,
 	TextInputStateType
 } from '../../@types/common/TextInput'
 import '../../styles/css/index.css';
@@ -19,7 +21,6 @@ const TextInput = forwardRef<TextInputHandleType, TextInputPropsType>((props, re
 		type: props.type || undefined,
 		error: props.error || false,
 		helperText: props.helperText || '',
-		label: props.label || '',
 		disable: props.disabled || false,
 	});
 	const [animationClassName, setAnimationClassName] = useState<string>('');
@@ -28,7 +29,7 @@ const TextInput = forwardRef<TextInputHandleType, TextInputPropsType>((props, re
 		return state;
 	}, [state]);
 
-	const setTextInputState = useCallback((newState: TextInputStateType): void => {
+	const setTextInputState = useCallback((newState: TextInputSetStateType): void => {
 		setState({...state, ...newState});
 	}, [state]);
 
@@ -49,7 +50,7 @@ const TextInput = forwardRef<TextInputHandleType, TextInputPropsType>((props, re
 		}
 	}, [state.error]);
 
-	const setTextValue = (event: any) => {
+	const setTextValue = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
 		setState({...state, value: event.target.value, error: false, helperText: ''});
 	};
 	return (
@@ -59,11 +60,11 @@ const TextInput = forwardRef<TextInputHandleType, TextInputPropsType>((props, re
 				disabled={state.disable}
 				error={state.error}
 				type={state.type}
-				label={state.label}
 				value={state.value}
 				helperText={state.helperText}
 				variant={props.variant || undefined}
 				onChange={setTextValue}
+				{...props}
 			/>
 		</div>
 	);

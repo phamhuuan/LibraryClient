@@ -16,6 +16,7 @@ import H from 'history';
 import Api from '../../sagas/api';
 import {ResetPasswordComponentStateType} from '../../@types/componentState/ResetPassword';
 import {OK} from '../../constants/Constant';
+import PathName from '../../constants/PathName';
 
 const ResetPassword: FC = () => {
 	type TextInputHandleType = ElementRef<typeof TextInput>;
@@ -38,8 +39,8 @@ const ResetPassword: FC = () => {
 	});
 
 	useEffect(() => {
-		if (location?.state?.from !== '/login') {
-			history.replace('/');
+		if (location?.state?.from !== PathName.Login) {
+			history.replace(PathName.Home);
 		}
 	}, [history, location?.state?.from]);
 
@@ -135,24 +136,24 @@ const ResetPassword: FC = () => {
 		if (!checkValidEmail(emailInputState.value.trim())) {
 			if (emailInputState.value === '') {
 				// neu email la ''
-				emailFieldRef.current?.setTextInputState({...emailInputState, helperText: 'Enter an email', error: true});
+				emailFieldRef.current?.setTextInputState({helperText: 'Enter an email', error: true});
 				return;
 			} else {
 				// neu email khong hop le
-				emailFieldRef.current?.setTextInputState({...emailInputState, helperText: 'Invalid email address', error: true});
+				emailFieldRef.current?.setTextInputState({helperText: 'Invalid email address', error: true});
 				return;
 			}
 		}
 		if (passwordInputState.value === '') {
-			passwordFieldRef.current?.setTextInputState({...passwordInputState, helperText: 'Enter a password', error: true});
+			passwordFieldRef.current?.setTextInputState({helperText: 'Enter a password', error: true});
 			return;
 		}
 		if (newPasswordInputState.value === '') {
-			passwordFieldRef.current?.setTextInputState({...passwordInputState, helperText: 'Enter a password', error: true});
+			passwordFieldRef.current?.setTextInputState({helperText: 'Enter a password', error: true});
 			return;
 		}
 		if (newPasswordInputState.value.length < 8) {
-			passwordFieldRef.current?.setTextInputState({...passwordInputState, helperText: 'Password too short', error: true});
+			passwordFieldRef.current?.setTextInputState({helperText: 'Password too short', error: true});
 			return;
 		}
 		const dataBody: ResetPasswordDataBodyType = {email: emailInputState.value.trim(), password: passwordInputState.value, newPassword: newPasswordInputState.value};
@@ -162,9 +163,9 @@ const ResetPassword: FC = () => {
 				history.goBack();
 			} else {
 				if (response.data.errorCode === ERROR_CODE.RESET_PASSWORD_ERROR.ACCOUNT_NOT_EXSIST) {
-					emailFieldRef.current?.setTextInputState({...emailInputState, error: true, helperText: 'Account does not exsist'});
+					emailFieldRef.current?.setTextInputState({error: true, helperText: 'Account does not exsist'});
 				} else if (response.data.errorCode === ERROR_CODE.RESET_PASSWORD_ERROR.WRONG_PASSWORD) {
-					passwordFieldRef.current?.setTextInputState({...passwordInputState, error: true, helperText: 'Wrong password'});
+					passwordFieldRef.current?.setTextInputState({error: true, helperText: 'Wrong password'});
 				} else {
 					modalRef.current?.openModal();
 				}

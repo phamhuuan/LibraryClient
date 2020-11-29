@@ -3,7 +3,6 @@ import React, {FC, lazy, Suspense, useEffect, useState} from "react";
 import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
 import {MainRouteStateType} from "../@types/routes/MainRoute";
 import Home from "../components/Home/Home";
-// import Login from "../components/Login/Login";
 import logo from "../assets/logo.jpg";
 import mainRouteStyle from "../styles/routes/mainRouteStyle";
 import mainStyle from "../styles/mainStyle";
@@ -13,6 +12,9 @@ import {RootReducerType} from "../@types/reducer";
 import {UserType} from "../@types/entity";
 import {GET_USER_INFO_FROM_TOKEN} from "../actions/ActionType";
 import ResetPassword from "../components/ResetPassword/ResetPassword";
+import PathName from "../constants/PathName";
+import {GetUserInforFromTokenActionType} from "../@types/action";
+import Loading from "../components/Common/Loading";
 
 const Login = lazy(() => import('../components/Login/Login'));
 
@@ -25,31 +27,35 @@ const MainRoute: FC = () => {
 	const dispatch = useDispatch();
 	// dung de lay du lieu tu trong store cua redux
 	const user = useSelector<RootReducerType, UserType | undefined>((state) => state.userReducer.user);
+	const getUserInfoFromTokenErrorCode = useSelector<RootReducerType, number | undefined>((state) => state.userReducer.getUserInfoFromTokenErrorCode);
+
 	useEffect(() => {
 		// kiem tra xem da dang nhap hay chua, neu chua thi hien form dang nhap
-		try {
-			setTimeout(() => {
-				// kiem tra thong tin ve user trong store
-				if (!user) {
-					// neu khong co thi kiem tra token luu trong cookie
-					const token = Cookies.get('token');
-					if (!token) {
-						// neu khong co trong cookie thi hien form login
-						setState({loading: false, needLogin: true});
-					} else {
-						// neu co thi luu thong tin vao store
-						dispatch({type: GET_USER_INFO_FROM_TOKEN, token});
-						// setState({loading: false, needLogin: false});
-					}
-				} else {
-					// neu co thi tiep tuc vao trang muon vao
-					setState({loading: false, needLogin: false});
-				}
-			}, 0);
-		} catch (error) {
-			console.log("error", error);
+		// kiem tra thong tin ve user trong store
+		if (!user) {
+			// neu khong co thi kiem tra token luu trong cookie
+			const token = Cookies.get('token');
+			if (!token) {
+				// neu khong co trong cookie thi hien form login
+				setState({loading: false, needLogin: true});
+			} else {
+				// neu co thi luu thong tin vao store
+				dispatch<GetUserInforFromTokenActionType>({type: GET_USER_INFO_FROM_TOKEN, token});
+				// setState({loading: false, needLogin: false});
+			}
+		} else {
+			// neu co thi tiep tuc vao trang muon vao
+			setState({loading: false, needLogin: false});
 		}
 	}, [dispatch, user]);
+
+	// kiem tra xem neu get token error => go to login
+	useEffect(() => {
+		if (getUserInfoFromTokenErrorCode) {
+			Cookies.remove('token');
+			setState({needLogin: true, loading: false});
+		}
+	}, [getUserInfoFromTokenErrorCode]);
 	if (state.loading) {
 		return (
 			<div style={{...mainRouteStyle.logoDiv, ...mainStyle.fullScreen}}>
@@ -59,19 +65,37 @@ const MainRoute: FC = () => {
 	}
 	return (
 		<BrowserRouter>
-			<Suspense fallback={<div>Loading...</div>}>
+			<Suspense fallback={<Loading />}>
 				<Switch>
-					<Route exact path="/">
-						{state.needLogin ? <Redirect to="/login" /> : <Home />}
+					<Route exact path={PathName.Home}>
+						{state.needLogin ? <Redirect to={PathName.Login} /> : <Home />}
 					</Route>
-					<Route exact path="/login">
-						{state.needLogin ? <Login /> : <Redirect to="/" />}
+					<Route exact path={PathName.Search}>
+						{state.needLogin ? <Redirect to={PathName.Login} /> : <Home />}
 					</Route>
-					<Route exact path="/resetPassword">
-						{state.needLogin ? <ResetPassword /> : <Redirect to="/" />}
+					<Route exact path={PathName.Borrowed}>
+						{state.needLogin ? <Redirect to={PathName.Login} /> : <Home />}
+					</Route>
+					<Route exact path={PathName.Authors}>
+						{state.needLogin ? <Redirect to={PathName.Login} /> : <Home />}
+					</Route>
+					<Route exact path={PathName.Authors + '/:genreId'}>
+						{state.needLogin ? <Redirect to={PathName.Login} /> : <Home />}
+					</Route>
+					<Route exact path={PathName.Authors + '/:genreId/:authorId'}>
+						{state.needLogin ? <Redirect to={PathName.Login} /> : <Home />}
+					</Route>
+					<Route exact path={PathName.Notifications}>
+						{state.needLogin ? <Redirect to={PathName.Login} /> : <Home />}
+					</Route>
+					<Route exact path={PathName.Login}>
+						{state.needLogin ? <Login /> : <Redirect to={PathName.Home} />}
+					</Route>
+					<Route exact path={PathName.ResetPassword}>
+						{state.needLogin ? <ResetPassword /> : <Redirect to={PathName.Home} />}
 					</Route>
 					<Route path="*">
-						<Redirect to="/" />
+						<Redirect to={PathName.Home} />
 					</Route>
 				</Switch>
 			</Suspense>

@@ -48,8 +48,9 @@ const CustomModal = forwardRef<CustomModalHandleType, CustomModalPropsType>((pro
 			open={state.isOpen}
 			onClose={closeModal}
 			aria-labelledby="simple-modal-title"
-			aria-describedby="simple-modal-description">
-			<div style={{left: '50%', top: '50%', transform: 'translate(-50%, -50%)'}} className={classes.paper}>
+			aria-describedby="simple-modal-description"
+			>
+			<div style={{left: '50%', top: '50%', transform: 'translate(-50%, -50%)'}} className={props.className !== undefined ? props.className : classes.paper}>
 				{props.children}
 			</div>
 		</Modal>

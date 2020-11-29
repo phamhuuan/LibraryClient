@@ -10,18 +10,19 @@ import {
 import {put, takeLatest} from 'redux-saga/effects';
 import Api from './api';
 import Cookie from 'js-cookie';
-import {DoLoginSagaAction} from '../@types/saga';
+import {DoLoginSagaAction, DoGetUserInfoFromTokenSagaAction} from '../@types/saga';
+import {FailActionType, GetUserInforFromTokenSuccessActionType, LoginSuccessActionType, ResetActionType} from '../@types/action';
 
-function *doLogin(action: DoLoginSagaAction) {
+function* doLogin(action: DoLoginSagaAction) {
 	try {
 		// put action sang reducer de xoa message login
-		yield put({type: LOGIN_RESET_MESSAGE});
+		yield put<ResetActionType>({type: LOGIN_RESET_MESSAGE});
 		// call api login
 		const response = yield Api.doLoginApi(action.dataBody);
 		if (response && response.data) {
 			if (response.data.status === OK) {
 				// neu login thanh cong (mo loginReducer.ts ra de xem phan xu li)
-				yield put({type: LOGIN_SUCCESS, user: response.data.user});
+				yield put<LoginSuccessActionType>({type: LOGIN_SUCCESS, user: response.data.user});
 				if (action.keepLogin) {
 					// neu keep login thi cho token luu trong cookie qua han trong 7 ngay
 					Cookie.set('token', response.data.token, {expires: 7});
@@ -31,13 +32,13 @@ function *doLogin(action: DoLoginSagaAction) {
 				}
 			} else {
 				// neu login that bai
-				yield put({type: LOGIN_FAIL, errorCode: response.data.errorCode})
+				yield put<FailActionType>({type: LOGIN_FAIL, errorCode: response.data.errorCode})
 			}
 		} else {
-			yield put({type: LOGIN_FAIL, errorCode: -1});
+			yield put<FailActionType>({type: LOGIN_FAIL, errorCode: -1});
 		}
 	} catch (error) {
-		yield put({type: LOGIN_FAIL, errorCode: -1});
+		yield put<FailActionType>({type: LOGIN_FAIL, errorCode: -1});
 	}
 }
 
@@ -46,22 +47,22 @@ export function* watchDoLogin() {
 	yield takeLatest(LOGIN, doLogin);
 }
 
-function *doGetMyUserInfoFromToken(action: {type: string, token: string}) {
+function* doGetMyUserInfoFromToken(action: DoGetUserInfoFromTokenSagaAction) {
 	try {
-		yield put({type: GET_USER_INFO_FROM_TOKEN_RESET_MESSAGE});
+		yield put<ResetActionType>({type: GET_USER_INFO_FROM_TOKEN_RESET_MESSAGE});
 		const response = yield Api.doGetMyUserInfoFromToken(action.token);
 		if (response && response.data) {
 			if (response.data.status === OK) {
 				console.log(response.data);
-				yield put({type: GET_USER_INFO_FROM_TOKEN_SUCCESS, user: response.data.user});
+				yield put<GetUserInforFromTokenSuccessActionType>({type: GET_USER_INFO_FROM_TOKEN_SUCCESS, user: response.data.user});
 			} else {
-				yield put({type: GET_USER_INFO_FROM_TOKEN_FAIL, errorCode: response.data.errorCode});
+				yield put<FailActionType>({type: GET_USER_INFO_FROM_TOKEN_FAIL, errorCode: response.data.errorCode});
 			}
 		} else {
-			yield put({type: GET_USER_INFO_FROM_TOKEN_FAIL, errorCode: -1});
+			yield put<FailActionType>({type: GET_USER_INFO_FROM_TOKEN_FAIL, errorCode: -1});
 		}
 	} catch (error) {
-		yield put({type: GET_USER_INFO_FROM_TOKEN_FAIL, errorCode: -1});
+		yield put<FailActionType>({type: GET_USER_INFO_FROM_TOKEN_FAIL, errorCode: -1});
 	}
 }
 
