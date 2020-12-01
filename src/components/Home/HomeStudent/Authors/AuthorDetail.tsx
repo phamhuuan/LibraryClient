@@ -76,7 +76,10 @@ const AuthorDetail: FC = () => {
 			return (
 				<>
 					<div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-						<Avatar style={{height: 200, width: 200}} alt={state.author.name} src={state.author.avatar[0]} />
+						<Avatar 
+							style={{height: 200, width: 200}} 
+							alt={state.author.name} 
+							src={state.author.avatar[0]} />
 						<p style={{fontSize: 30, marginTop: 10, fontWeight: 'bold'}}>{state.author.name}</p>
 					</div>
 					<div style={{alignSelf: 'left'}}>
@@ -103,7 +106,9 @@ const AuthorDetail: FC = () => {
 
 	return (
 		<div style={{display: 'flex', flex: 1, height: '100%', overflowY: 'auto'}}>
-			<div ref={divElementRef} style={{display: 'flex', flex: 1, marginLeft: 20, marginRight: 20, flexDirection: 'column'}}>
+			<div 
+					ref={divElementRef} 
+					style={{display: 'flex', flex: 1, marginLeft: 20, marginRight: 20, flexDirection: 'column'}}>
 				{backButton}
 				{authorInfo}
 				{loadingModal}
