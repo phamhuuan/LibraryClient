@@ -6,3 +6,11 @@ export const checkValidEmail = (str: string): boolean => {
 export const getCurrentMillisecond = (): number => {
 	return new Date().getTime();
 }
+
+export const parseDate = (data: string): string => {
+	const dateData = new Date(data);
+	const date = dateData.getDate();
+	const month = dateData.getMonth() + 1;
+	const year = dateData.getFullYear();
+	return date + '/' + month + '/' + year;
+};
