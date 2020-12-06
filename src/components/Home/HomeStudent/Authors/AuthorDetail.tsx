@@ -62,8 +62,9 @@ const AuthorDetail: FC = () => {
 	}, [getAuthorInfo]);
 
 	const goBack = useCallback((): void => {
-		history.replace(`${PathName.Authors}/${genreId}`, {});
-	}, [genreId, history]);
+		history.goBack();
+		// history.replace(`${PathName.Authors}/${genreId}`, {});
+	}, [history]);
 
 	const backButton = useMemo((): ReactNode => (
 		<div>

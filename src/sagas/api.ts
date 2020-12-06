@@ -133,6 +133,20 @@ const getBooks = async (searchString: string, page: number) => {
 	return await handleGetRequest2(url, config);
 }
 
+const getBookInfo = async (bookId: string) => {
+	const token = Cookies.get('token');
+	const config: AxiosRequestConfig = {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: 'Bearer ' + token,
+		},
+		timeout: 10000,
+	};
+	const url = `${ApiString.URL_GetBookInfo}?bookId=${bookId}`;
+	return await handleGetRequest2(url, config);
+}
+
 function timeout(ms: number, promise: Promise<any>) {
 	return new Promise(function (resolve, reject) {
 		setTimeout(function () {
@@ -215,6 +229,7 @@ const Api = {
 	resetPassword,
 	getAuthorInfo,
 	getBooks,
+	getBookInfo,
 };
 
 export default Api;

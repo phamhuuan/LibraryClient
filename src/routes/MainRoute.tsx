@@ -85,6 +85,9 @@ const MainRoute: FC = () => {
 					<Route exact path={PathName.Authors + '/:genreId/:authorId'}>
 						{state.needLogin ? <Redirect to={PathName.Login} /> : <Home />}
 					</Route>
+					<Route exact path={PathName.Book + '/:bookId'}>
+						{state.needLogin ? <Redirect to={PathName.Login} /> : <Home />}
+					</Route>
 					<Route exact path={PathName.Notifications}>
 						{state.needLogin ? <Redirect to={PathName.Login} /> : <Home />}
 					</Route>

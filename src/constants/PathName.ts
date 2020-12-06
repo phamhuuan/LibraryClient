@@ -6,6 +6,7 @@ const PathName = {
 	Borrowed: '/borrowed',
 	Authors: '/authors',
 	Notifications: '/notifications',
+	Book: '/book',
 };
 
 export default PathName;

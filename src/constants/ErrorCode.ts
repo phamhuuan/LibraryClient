@@ -41,6 +41,13 @@ const ERROR_CODE = {
 		UNKNOW: -1,
 		AUTHOR_NOT_EXSIST: 0,
 	},
+	GET_BOOKS_ERROR: {
+		UNKNOW: -1,
+	},
+	GET_BOOK_INFO_ERROR: {
+		UNKNOW: -1,
+		BOOK_NOT_FOUND: 0,
+	},
 };
 
 export default ERROR_CODE;

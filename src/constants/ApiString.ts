@@ -11,6 +11,7 @@ const ApiString = {
 	URL_GetAuthorsByGenreId: PREFIX + '/getAuthorByGenreId',
 	URL_GetAuthorInfo: PREFIX + '/getAuthorInfo',
 	URL_GetBooks: PREFIX + '/getBooks',
+	URL_GetBookInfo: PREFIX + '/getBookInfo',
 };
 
 export default ApiString;

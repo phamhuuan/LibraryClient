@@ -1,4 +1,4 @@
-import {AuthorType, GenreType, UserType} from '../entity';
+import {AuthorType, BookResponseType, GenreType, UserType} from '../entity';
 
 export interface UserReducerStateType {
 	user?: UserType;
@@ -23,8 +23,18 @@ export interface AuthorReducerStateType {
 	hasMore: boolean;
 }
 
+export interface BooksReducerStateType {
+	data: BookResponseType[];
+	searchString: string;
+	getBooksMessage: string;
+	currentPage: number;
+	totalPage: number;
+	saveData: boolean;
+}
+
 export interface RootReducerType {
 	userReducer: UserReducerStateType;
 	genresReducer: GenresReducerStateType;
 	authorsReducer: AuthorReducerStateType;
+	booksReducer: BooksReducerStateType;
 }

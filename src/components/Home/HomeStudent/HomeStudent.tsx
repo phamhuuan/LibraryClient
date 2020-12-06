@@ -7,46 +7,35 @@ import H from 'history';
 import {useHistory, useLocation} from 'react-router-dom';
 import PathName from '../../../constants/PathName';
 import Loading from '../../Common/Loading';
+import BookScreen from './Book/BookScreen';
+import { useDispatch } from 'react-redux';
+import { GetBooksSaveDataActionType } from '../../../@types/action';
+import { GET_BOOKS_SAVE_DATA } from '../../../actions/ActionType';
 const SearchScreen = lazy(() => import('./Search/SearchScreen'));
 const AuthorsScreen = lazy(() => import('./Authors/AuthorScreen'));
 
 const HomeStudent: FC = () => {
 	const history = useHistory();
+	const dispatch = useDispatch();
 	const location: H.Location<any> = useLocation<any>();
-	const goToHome = useCallback((): void => {
-		if (location.pathname !== PathName.Home) {
-			history.push(PathName.Home);
+	const goTo = useCallback((pathName: string): void => {
+		if (location.pathname !== pathName) {
+			// neu dang tu trong chi tiet sach bam vao nut search sach thi khong xoa data con lai thi xoa
+			if (!(location.pathname.startsWith(PathName.Book) && pathName === PathName.Search)) {
+				dispatch<GetBooksSaveDataActionType>({type: GET_BOOKS_SAVE_DATA, save: false});
+			}
+			history.push(pathName);
 		}
-	}, [history, location.pathname]);
-	const goToFindBook = useCallback((): void => {
-		if (location.pathname !== PathName.Search) {
-			history.push(PathName.Search);
-		}
-	}, [history, location.pathname]);
-	const goToBooksBorrowed = useCallback((): void => {
-		if (location.pathname !== PathName.Borrowed) {
-			history.push(PathName.Borrowed);
-		}
-	}, [history, location.pathname]);
-	const goToAuthors = useCallback((): void => {
-		if (location.pathname !== PathName.Authors) {
-			history.push(PathName.Authors);
-		}
-	}, [history, location.pathname]);
-	const goToNotification = useCallback((): void => {
-		if (location.pathname !== PathName.Notifications) {
-			history.push(PathName.Notifications);
-		}
-	}, [history, location.pathname]);
+	}, [dispatch, history, location.pathname]);
 	const leftPart = useMemo((): ReactNode => (
 		<div style={{display: 'flex', flexDirection: 'column', overflowY: 'auto', width: '15%', backgroundColor: 'ghostwhite', alignItems: 'center'}}>
-			<MenuButton text={'Home'} onClick={goToHome} />
-			<MenuButton text={'Find a book'} onClick={goToFindBook} />
-			<MenuButton text={'Books borrowed'} onClick={goToBooksBorrowed} />
-			<MenuButton text={'Genres & Authors'} onClick={goToAuthors} />
-			<MenuButton text={'Notifications'} onClick={goToNotification} />
+			<MenuButton text={'Home'} onClick={() => goTo(PathName.Home)} />
+			<MenuButton text={'Find a book'} onClick={() => goTo(PathName.Search)} />
+			<MenuButton text={'Books borrowed'} onClick={() => goTo(PathName.Borrowed)} />
+			<MenuButton text={'Genres & Authors'} onClick={() => goTo(PathName.Authors)} />
+			<MenuButton text={'Notifications'} onClick={() => goTo(PathName.Notifications)} />
 		</div>
-	), [goToAuthors, goToBooksBorrowed, goToFindBook, goToHome, goToNotification]);
+	), [goTo]);
 	const rightPart = useMemo((): ReactNode => {
 		if (location.pathname === PathName.Home) {
 			return (
@@ -66,6 +55,9 @@ const HomeStudent: FC = () => {
 		}
 		if (location.pathname === PathName.Search) {
 			return <SearchScreen />;
+		}
+		if (location.pathname.startsWith(PathName.Book)) {
+			return <BookScreen />;
 		}
 		if (location.pathname === PathName.Borrowed) {
 			return <div>2</div>;
