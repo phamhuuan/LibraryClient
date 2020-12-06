@@ -12,9 +12,7 @@ const GenreItem: FC<AuthorItemPropsType> = (props: AuthorItemPropsType) => {
 	return (
 		<Button onClick={goToAuthorDetailScreen} style={{display: 'flex', maxWidth: 240, minHeight: 60, backgroundColor: 'ghostwhite', marginTop: 10}}>
 			<div style={{display: 'flex', alignItems: 'center', textAlign: 'left', flex: 1}}>
-				<Avatar 
-					alt={props.author.name} 
-					src={props.author.avatar[0]} />
+				<Avatar alt={props.author.name} src={props.author.avatar[0]} />
 				<div style={{width: 10}} />
 				{props.author.name}
 			</div>
