@@ -31,7 +31,11 @@ const NetworkErrorModal = forwardRef<CustomModalHandleType, NetworkErrorModalTyp
 					Please check network connection!
 				</InputLabel>
 				<div style={{display: 'flex', justifyContent: 'center'}}>
-					<Button variant="contained" color="primary" onClick={closeModal} style={{width: 100}}>
+					<Button 
+						variant="contained" 
+						color="primary" 
+						onClick={closeModal} 
+						style={{width: 100}}>
 						OK
 					</Button>
 				</div>
