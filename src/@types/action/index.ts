@@ -1,4 +1,4 @@
-import {AuthorType, GenreType, UserType} from '../entity';
+import {AuthorType, BookResponseType, GenreType, UserType} from '../entity';
 
 /**
  * Common type
@@ -64,3 +64,19 @@ export interface GetAuthorsByGenreIdSuccessActionType extends ActionType {
 }
 
 export type AuthorsReducerActionType = GetAuthorsByGenreIdSuccessActionType & FailActionType & ResetActionType;
+
+export interface GetBooksSuccessActionType extends ActionType {
+	books: BookResponseType[];
+	searchString: string;
+	currentPage: number;
+	totalPage: number;
+}
+
+export interface GetBooksSaveDataActionType extends ActionType {
+	save: boolean;
+}
+
+export interface GetBooksDeleteDataActionType extends ActionType {
+}
+
+export type BooksReducerActionType = GetBooksSuccessActionType & GetBooksSaveDataActionType & FailActionType & ResetActionType;
