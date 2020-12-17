@@ -11,6 +11,13 @@ import {Carousel} from 'react-responsive-carousel';
 import {BookResponseType} from '../../../../@types/entity';
 import {Button} from '@material-ui/core';
 import {parseDate} from '../../../../utils/Utils';
+import 'date-fns';
+import DateFnsUtils from '@date-io/date-fns';
+import {MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
+import {MaterialUiPickersDate} from '@material-ui/pickers/typings/date';
+import {useSelector} from 'react-redux';
+import {RootReducerType} from '../../../../@types/reducer';
+
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
 		paper: {
@@ -31,7 +38,14 @@ const BookScreen: FC = () => {
 	}
 	const {bookId}: ParamsType = useParams();
 	const [book, setBook] = useState<BookResponseType | undefined>(undefined);
+	const userId = useSelector<RootReducerType, string>((state) => (state.userReducer.user?._id || ''));
 	const history = useHistory();
+	const [selectedDate, setSelectedDate] = useState<MaterialUiPickersDate>(new Date());
+	const [showRequestButton, setShowRequestButton] = useState<boolean>(true);
+
+	const handleDateChange = (date: MaterialUiPickersDate) => {
+		setSelectedDate(date);
+	};
 
 	const getBookInfo = useCallback(async () => {
 		const result = await Api.getBookInfo(bookId);
@@ -67,6 +81,15 @@ const BookScreen: FC = () => {
 		</div>
 	), [goBack]);
 
+	// const onAskToBorrow = useCallback(async () => {
+	// 	const result = await Api.requestBorrow(userId, bookId, new Date(), (selectedDate || new Date()));
+	// 	if (result && result.status === 200) {
+	// 		if (result.data.status === OK) {
+	// 			setShowRequestButton(false);
+	// 		}
+	// 	}
+	// }, [bookId, selectedDate, userId]);
+
 	const bookInfo = useMemo((): ReactNode => {
 		if (book) {
 			return (
@@ -99,6 +122,35 @@ const BookScreen: FC = () => {
 		}
 		return <div />;
 	}, [book]);
+
+	// const askToBorrow = useMemo((): ReactNode => {
+	// 	if (showRequestButton) {
+	// 		return (
+	// 			<div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+	// 				<div style={{width: 200, marginRight: 20}}>
+	// 					<MuiPickersUtilsProvider utils={DateFnsUtils}>
+	// 						<KeyboardDatePicker
+	// 							margin="normal"
+	// 							id="date-picker-dialog"
+	// 							label="Choose end date"
+	// 							format="MM/dd/yyyy"
+	// 							value={selectedDate}
+	// 							onChange={handleDateChange}
+	// 							KeyboardButtonProps={{
+	// 								'aria-label': 'change date',
+	// 							}}
+	// 						/>
+	// 					</MuiPickersUtilsProvider>
+	// 				</div>
+	// 				<Button variant={'contained'} color={'primary'} onClick={onAskToBorrow}>
+	// 					Ask to borrow
+	// 				</Button>
+	// 			</div>
+	// 		);
+	// 	} else {
+	// 		return <div />;
+	// 	}
+	// }, [onAskToBorrow, selectedDate, showRequestButton]);
 
 	return (
 		<div style={{display: 'flex', flexDirection: 'column', flex: 1, overflowY: 'auto'}}>

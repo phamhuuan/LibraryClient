@@ -10,6 +10,8 @@ import NetworkErrorModal from '../../../Common/NetworkErrorModal';
 import Loading from '../../../Common/Loading';
 import {makeStyles, Theme, createStyles} from '@material-ui/core/styles';
 import ERROR_CODE from '../../../../constants/ErrorCode';
+import {toast, ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -49,11 +51,12 @@ const AuthorDetail: FC = () => {
 				if (response.data.errorCode === ERROR_CODE.GET_AUTHOR_INFO_ERROR.AUTHOR_NOT_EXSIST) {
 					history.replace(PathName.Authors + '/' + genreId);
 				} else {
-					networkErrorModalRef.current?.openModal();
+					toast('Network error', {type: 'error'});
 				}
 			}
 		} else {
-			networkErrorModalRef.current?.openModal();
+			console.log('error');
+			toast('Network error', {type: 'error'});
 		}
 	}, [authorId, genreId, history]);
 
@@ -63,7 +66,6 @@ const AuthorDetail: FC = () => {
 
 	const goBack = useCallback((): void => {
 		history.goBack();
-		// history.replace(`${PathName.Authors}/${genreId}`, {});
 	}, [history]);
 
 	const backButton = useMemo((): ReactNode => (
@@ -108,12 +110,13 @@ const AuthorDetail: FC = () => {
 	return (
 		<div style={{display: 'flex', flex: 1, height: '100%', overflowY: 'auto'}}>
 			<div 
-					ref={divElementRef} 
-					style={{display: 'flex', flex: 1, marginLeft: 20, marginRight: 20, flexDirection: 'column'}}>
+				ref={divElementRef} 
+				style={{display: 'flex', flex: 1, marginLeft: 20, marginRight: 20, flexDirection: 'column'}}>
 				{backButton}
 				{authorInfo}
 				{loadingModal}
 				{networkErrorModal}
+				<ToastContainer />
 			</div>
 		</div>
 	);
