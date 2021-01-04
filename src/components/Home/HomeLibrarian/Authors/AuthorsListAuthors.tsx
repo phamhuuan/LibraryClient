@@ -3,20 +3,22 @@ import {makeStyles, Theme, createStyles} from '@material-ui/core/styles';
 import React, {ChangeEvent, ElementRef, FC, ReactNode, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {useHistory, useParams} from 'react-router';
-import {ToastContainer, toast} from 'react-toastify';
+import {toast, ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import {GetAuthorsByGenreIdActionType} from '../../../../@types/action';
 import {defaultTextInputState, TextInputStateType} from '../../../../@types/common/TextInput';
 import {AuthorType} from '../../../../@types/entity';
 import {RootReducerType} from '../../../../@types/reducer';
 import {GET_AUTHORS_BY_GENRE_ID, GET_AUTHORS_BY_GENRE_ID_FAIL, GET_AUTHORS_BY_GENRE_ID_SUCCESS} from '../../../../actions/ActionType';
+import {OK} from '../../../../constants/Constant';
 import ERROR_CODE from '../../../../constants/ErrorCode';
 import PathName from '../../../../constants/PathName';
 import useWindowDimensions, {WindowDimensionsType} from '../../../../hooks/useWindowDimensions';
+import Api from '../../../../sagas/api';
 import CustomModal from '../../../Common/CustomModal';
 import Loading from '../../../Common/Loading';
 import TextInput from '../../../Common/TextInput';
 import AuthorItem from './AuthorItem';
-import 'react-toastify/dist/ReactToastify.css';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -44,10 +46,14 @@ const AuthorsListAuthors: FC = () => {
 	type TextInputHandleType = ElementRef<typeof TextInput>;
 	type ModalHandleType = ElementRef<typeof CustomModal>;
 	const searchAuthorInputRef = useRef<TextInputHandleType>(null);
+	const authorNameInputRef = useRef<TextInputHandleType>(null);
+	const authorAvatarInputRef = useRef<TextInputHandleType>(null);
+	const authorBiographyInputRef = useRef<TextInputHandleType>(null);
 	const loadingModalRef = useRef<ModalHandleType>(null);
 	const divElementRef = useRef<HTMLDivElement>(null);
 	const {width}: WindowDimensionsType = useWindowDimensions();
 	const [filterData, setFilterData] = useState<AuthorType[][]>([[]]);
+	const [isShowCreateAuthorVew, setIsShowCreateAuthorVew] = useState<boolean>(false);
 
 	const updateFilterData = useCallback((data: AuthorType[]) => {
 		if (data.length === 0) {
@@ -120,23 +126,33 @@ const AuthorsListAuthors: FC = () => {
 		}
 	}, [authorData, updateFilterData]);
 
-	const searchInput = useMemo((): ReactNode => (
-		<div style={{paddingTop: 10, width: '100%'}}>
-			<TextInput ref={searchAuthorInputRef} label={''} variant={'outlined'} style={{width: '100%'}} placeholder={'Enter author name'} onChange={onChange} />
-		</div>
-	), [onChange]);
+	const searchInput = useMemo((): ReactNode => {
+		if (!isShowCreateAuthorVew) {
+			return (
+				<div style={{paddingTop: 10, width: '100%'}}>
+					<TextInput ref={searchAuthorInputRef} label={''} variant={'outlined'} style={{width: '100%'}} placeholder={'Enter author name'} onChange={onChange} />
+				</div>
+			);
+		}
+		return <div />;
+	}, [isShowCreateAuthorVew, onChange]);
 
-	const authorDataView = useMemo((): ReactNode => (
-		<div style={{display: 'flex', marginBottom: 15, flexDirection: 'row', justifyContent: 'space-between'}}>
-			{filterData.map((authors: AuthorType[], index: number): ReactNode =>  (
-				<div key={index} style={{display: 'flex', flex: 1, flexDirection: 'column', marginRight: index !== filterData.length - 1 ? 10 : 0, marginLeft: index !== 0 ? 10 : 0}}>
-					{authors.map((author: AuthorType, index: number): ReactNode => (
-						<AuthorItem author={author} key={index} />
+	const authorDataView = useMemo((): ReactNode => {
+		if (!isShowCreateAuthorVew) {
+			return (
+				<div style={{display: 'flex', marginBottom: 15, flexDirection: 'row', justifyContent: 'space-between'}}>
+					{filterData.map((authors: AuthorType[], index: number): ReactNode =>  (
+						<div key={index} style={{display: 'flex', flex: 1, flexDirection: 'column', marginRight: index !== filterData.length - 1 ? 10 : 0, marginLeft: index !== 0 ? 10 : 0}}>
+							{authors.map((author: AuthorType, index: number): ReactNode => (
+								<AuthorItem author={author} key={index} />
+							))}
+						</div>
 					))}
 				</div>
-			))}
-		</div>
-	), [filterData]);
+			);
+		}
+		return <div />;
+	}, [filterData, isShowCreateAuthorVew]);
 
 	const getMoreAuthor = useCallback(() => {
 		loadingModalRef.current?.openModal();
@@ -144,23 +160,68 @@ const AuthorsListAuthors: FC = () => {
 	}, [authorData, dispatch, genreId]);
 
 	const seeMoreButton = useMemo((): ReactNode => {
-		if (!hasMoreAuthor) return <div />;
+		if (!hasMoreAuthor || isShowCreateAuthorVew) return <div />;
 		return (
 			<div style={{display: 'flex', alignItems: 'center', marginBottom: 15, justifyContent: 'center'}}>
 				<Button onClick={getMoreAuthor} variant={'contained'} color={'primary'} style={{paddingLeft: 50, paddingRight: 50, fontSize: 20}}>See more</Button>
 			</div>
 		);
-	}, [getMoreAuthor, hasMoreAuthor]);
+	}, [getMoreAuthor, hasMoreAuthor, isShowCreateAuthorVew]);
+
+	const setShowCreateAuthorView = () => {
+		setIsShowCreateAuthorVew(true);
+	};
+
+	const setHideCreateGenreView = () => {
+		setIsShowCreateAuthorVew(false);
+	};
+
+	const createNewGenre = useCallback(async () => {
+		if (authorNameInputRef.current?.getTextInputState().value.trim() && authorAvatarInputRef.current?.getTextInputState().value.trim() && authorBiographyInputRef.current?.getTextInputState().value.trim()) {
+			const response = await Api.createAuthor(authorNameInputRef.current.getTextInputState().value.trim(), [authorAvatarInputRef.current.getTextInputState().value.trim()], genreId, authorBiographyInputRef.current.getTextInputState().value.trim());
+			if (response && response.status === 200) {
+				if (response.data.status === OK) {
+					toast('Create author success', {type: 'success'});
+					setIsShowCreateAuthorVew(false);
+				} else {
+					toast('Network error', {type: 'error'});
+				}
+			} else {
+				toast('Network error', {type: 'error'});
+			}
+		} else {
+			toast('It could not be an empty string', {type: 'warning'});
+		}
+	}, [genreId]);
+
+	const createNewAuthorView = useMemo((): ReactNode => {
+		if (isShowCreateAuthorVew) {
+			return (
+				<div>
+					<p>Name</p>
+					<TextInput ref={authorNameInputRef} label={''} variant={'outlined'} style={{width: '100%'}} placeholder={'Name'} />
+					<p>Avatar</p>
+					<TextInput ref={authorAvatarInputRef} label={''} variant={'outlined'} style={{width: '100%'}} placeholder={'Avatar url'} />
+					<p>Biography</p>
+					<TextInput ref={authorBiographyInputRef} label={''} variant={'outlined'} style={{width: '100%'}} rowsMax={10} multiline placeholder={'Biography'} />
+					<Button onClick={setHideCreateGenreView} color={'secondary'}>Cancel</Button>
+					<Button onClick={createNewGenre} color={'primary'}>Save</Button>
+				</div>
+			);
+		}
+		return <Button onClick={setShowCreateAuthorView}>Create new author</Button>;
+	}, [createNewGenre, isShowCreateAuthorVew]);
 
 	return (
 		<div style={{display: 'flex', flex: 1, height: '100%', overflowY: 'auto'}}>
 			<div ref={divElementRef} style={{display: 'flex', flex: 1, marginLeft: 20, marginRight: 20, flexDirection: 'column'}}>
 				{backButton}
+				{createNewAuthorView}
 				{searchInput}
 				{authorDataView}
+				{seeMoreButton}
 				{loadingModal}
 				<ToastContainer />
-				{seeMoreButton}
 			</div>
 		</div>
 	);

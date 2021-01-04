@@ -16,7 +16,6 @@ import {RootReducerType} from '../../@types/reducer';
 import ERROR_CODE from '../../constants/ErrorCode';
 import {Tooltip} from '@material-ui/core';
 import CustomModal from '../Common/CustomModal';
-import NetworkErrorModal from '../Common/NetworkErrorModal';
 import {useHistory} from 'react-router-dom';
 
 const Login: FC = () => {
@@ -95,7 +94,6 @@ const Login: FC = () => {
 					<Button variant="contained" color="primary" onClick={onClickLogin}>Login</Button>
 				</div>
 			</Box>
-			<NetworkErrorModal ref={modalRef} />
 		</div>
 	);
 };

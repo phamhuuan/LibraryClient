@@ -10,7 +10,8 @@ import {createMuiTheme} from '@material-ui/core/styles';
 import {ThemeProvider} from '@material-ui/core';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from './sagas/rootSaga';
-
+import {ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const theme = createMuiTheme({      
   typography: {
     button: {
@@ -27,6 +28,7 @@ const App: FC = () => {
 			<ThemeProvider theme={theme}>
 				<React.Fragment>
 			    <MainRoute />
+					<ToastContainer />
 			  </React.Fragment>
 			</ThemeProvider>
 		</Provider>

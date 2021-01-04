@@ -40,3 +40,29 @@
 		transform: rotate(360deg);
 	}
 }
+
+.authorButton {
+	display: flex;
+	padding-left: 5px;
+	padding-right: 5px;
+	background-color: ghostwhite;
+	padding-top: 10px;
+	padding-bottom: 10px;
+	margin-top: 10px;
+	user-select: none;
+}
+
+.authorButton:hover {
+	background-color: #e6f7ff;
+}
+
+.authorButtonText {
+	display: flex;
+	align-items: center;
+	text-align: left;
+	flex: 1;
+}
+
+.authorButton:hover .authorButtonText {
+	color: #1890ff;
+}

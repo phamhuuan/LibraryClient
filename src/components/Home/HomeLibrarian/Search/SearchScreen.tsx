@@ -10,6 +10,7 @@ import {useHistory} from 'react-router-dom';
 import PathName from '../../../../constants/PathName';
 import {useDispatch, useSelector} from 'react-redux';
 import {BooksReducerStateType, RootReducerType} from '../../../../@types/reducer';
+import {BookResponseType} from '../../../../@types/entity';
 import {GetBooksSuccessActionType} from '../../../../@types/action';
 import {GET_BOOKS_SUCCESS} from '../../../../actions/ActionType';
 import {parseDate} from '../../../../utils/Utils';
@@ -94,7 +95,7 @@ const SearchScreen: FC = () => {
 
 	const listBookView = useMemo((): ReactNode => (
 		<div style={{overflowY: 'auto', marginBottom: 10}}>
-			{booksReducerState.data.map((book) => (
+			{booksReducerState.data.map((book: BookResponseType) => (
 				<div key={book._id} style={{borderRadius: 16, backgroundColor: '#e7e7e7', marginTop: 10, padding: 10}}>
 					<p>
 						<strong>Title:</strong> {book.name}
@@ -104,6 +105,8 @@ const SearchScreen: FC = () => {
 						<strong>Publish date:</strong> {parseDate(book.publishDate)}
 						<br />
 						<strong>Location:</strong> Room {book.location}
+						<br />
+						<strong>Amount:</strong> {book.amount}
 						<br />
 						<strong>Authors:</strong>
 						{book.authors.map((author) => (

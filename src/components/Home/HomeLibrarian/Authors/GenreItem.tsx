@@ -1,4 +1,3 @@
-import {Button} from '@material-ui/core';
 import React, {FC} from 'react';
 import {useHistory} from 'react-router-dom';
 import {GenreItemPropsType} from '../../../../@types/componentPropsType/GenreItemPropsType';
@@ -11,11 +10,11 @@ const GenreItem: FC<GenreItemPropsType> = (props: GenreItemPropsType) => {
 		history.push(PathName.Authors + '/' + props.genre.genreId);
 	};
 	return (
-		<Button onClick={goToListAuthorScreen} className={'authorButton'}>
+		<div onClick={goToListAuthorScreen} className={'authorButton'}>
 			<div className={'authorButtonText'}>
 				{props.genre.name}
 			</div>
-		</Button>
+		</div>
 	);
 }
 

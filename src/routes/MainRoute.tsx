@@ -1,20 +1,20 @@
 /* tslint:disable */
-import React, {FC, lazy, Suspense, useEffect, useState} from "react";
-import {BrowserRouter, Redirect, Route, Switch} from "react-router-dom";
-import {MainRouteStateType} from "../@types/routes/MainRoute";
-import Home from "../components/Home/Home";
-import logo from "../assets/logo.jpg";
-import mainRouteStyle from "../styles/routes/mainRouteStyle";
-import mainStyle from "../styles/mainStyle";
-import Cookies from "js-cookie";
-import {useDispatch, useSelector} from "react-redux";
-import {RootReducerType} from "../@types/reducer";
-import {UserType} from "../@types/entity";
-import {GET_USER_INFO_FROM_TOKEN} from "../actions/ActionType";
-import ResetPassword from "../components/ResetPassword/ResetPassword";
-import PathName from "../constants/PathName";
-import {GetUserInforFromTokenActionType} from "../@types/action";
-import Loading from "../components/Common/Loading";
+import React, {FC, lazy, Suspense, useEffect, useState} from 'react';
+import {BrowserRouter, Redirect, Route, Switch} from 'react-router-dom';
+import {MainRouteStateType} from '../@types/routes/MainRoute';
+import Home from '../components/Home/Home';
+import logo from '../assets/logo.jpg';
+import mainRouteStyle from '../styles/routes/mainRouteStyle';
+import mainStyle from '../styles/mainStyle';
+import Cookies from 'js-cookie';
+import {useDispatch, useSelector} from 'react-redux';
+import {RootReducerType} from '../@types/reducer';
+import {UserType} from '../@types/entity';
+import {GET_USER_INFO_FROM_TOKEN} from '../actions/ActionType';
+import ResetPassword from '../components/ResetPassword/ResetPassword';
+import PathName from '../constants/PathName';
+import {GetUserInforFromTokenActionType} from '../@types/action';
+import Loading from '../components/Common/Loading';
 
 const Login = lazy(() => import('../components/Login/Login'));
 
@@ -59,7 +59,7 @@ const MainRoute: FC = () => {
 	if (state.loading) {
 		return (
 			<div style={{...mainRouteStyle.logoDiv, ...mainStyle.fullScreen}}>
-				<img alt={"Logo"} src={logo}></img>
+				<img alt={'Logo'} src={logo}></img>
 			</div>
 		);
 	}
@@ -88,7 +88,7 @@ const MainRoute: FC = () => {
 					<Route exact path={PathName.Book + '/:bookId'}>
 						{state.needLogin ? <Redirect to={PathName.Login} /> : <Home />}
 					</Route>
-					<Route exact path={PathName.Notifications}>
+					<Route exact path={PathName.BorrowBook}>
 						{state.needLogin ? <Redirect to={PathName.Login} /> : <Home />}
 					</Route>
 					<Route exact path={PathName.Login}>
@@ -97,7 +97,7 @@ const MainRoute: FC = () => {
 					<Route exact path={PathName.ResetPassword}>
 						{state.needLogin ? <ResetPassword /> : <Redirect to={PathName.Home} />}
 					</Route>
-					<Route path="*">
+					<Route path='*'>
 						<Redirect to={PathName.Home} />
 					</Route>
 				</Switch>

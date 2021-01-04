@@ -147,6 +147,118 @@ const getBookInfo = async (bookId: string) => {
 	return await handleGetRequest2(url, config);
 }
 
+const createGenre = async (name: string) => {
+	const token = Cookies.get('token');
+	const config: AxiosRequestConfig = {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: 'Bearer ' + token,
+		},
+		timeout: 10000,
+	};
+	const url = ApiString.URL_CreateGenre;
+	return await handlePostRequest2(url, config, {name});
+};
+
+const createAuthor = async (name: string, avatar: string[], genreId: string, biography: string) => {
+	const token = Cookies.get('token');
+	const config: AxiosRequestConfig = {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: 'Bearer ' + token,
+		},
+		timeout: 10000,
+	};
+	const url = ApiString.URL_CreateAuthor;
+	return await handlePostRequest2(url, config, {name, avatar, genreId, biography});
+};
+
+const editAuthor = async (author: any) => {
+	const token = Cookies.get('token');
+	const config: AxiosRequestConfig = {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: 'Bearer ' + token,
+		},
+		timeout: 10000,
+	};
+	const url = ApiString.URL_EditAuthor;
+	return await handlePostRequest2(url, config, author);
+};
+
+const searchAuthor = async (searchString: string, genreId: string, ignoreList: string[]) => {
+	const token = Cookies.get('token');
+	const config: AxiosRequestConfig = {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: 'Bearer ' + token,
+		},
+		timeout: 10000,
+	};
+	const url = ApiString.URL_SearchAuthor;
+	return await handlePostRequest2(url, config, {searchString, genreId, ignoreList});
+};
+
+const editBook = async (book: any) => {
+	const token = Cookies.get('token');
+	const config: AxiosRequestConfig = {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: 'Bearer ' + token,
+		},
+		timeout: 10000,
+	};
+	const url = ApiString.URL_EditBook;
+	return await handlePostRequest2(url, config, book);
+};
+
+const searchGenre = async (searchString: string) => {
+	const token = Cookies.get('token');
+	const config: AxiosRequestConfig = {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: 'Bearer ' + token,
+		},
+		timeout: 10000,
+	};
+	const url = ApiString.URL_SearchGenre;
+	return await handlePostRequest2(url, config, {searchString});
+};
+
+const createBook = async (name: string, genreId: string, authorIdArr: string[], publishDate: Date, location: number, amount: number, images: string[]) => {
+	const token = Cookies.get('token');
+	const config: AxiosRequestConfig = {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: 'Bearer ' + token,
+		},
+		timeout: 10000,
+	};
+	const url = ApiString.URL_CreateBook;
+	return await handlePostRequest2(url, config, {name, genreId, authorIdArr, publishDate, location, amount, images});
+};
+
+const getUserByStudentId = async (studentId: number) => {
+	const token = Cookies.get('token');
+	const config: AxiosRequestConfig = {
+		headers: {
+			Accept: "application/json",
+			"Content-Type": "application/json",
+			Authorization: 'Bearer ' + token,
+		},
+		timeout: 10000,
+	};
+	const url = `${ApiString.URL_GetUserByStudentId}?studentId=${studentId}`;
+	return await handleGetRequest2(url, config);
+}
+
 function timeout(ms: number, promise: Promise<any>) {
 	return new Promise(function (resolve, reject) {
 		setTimeout(function () {
@@ -230,6 +342,14 @@ const Api = {
 	getAuthorInfo,
 	getBooks,
 	getBookInfo,
+	createGenre,
+	createAuthor,
+	editAuthor,
+	searchAuthor,
+	editBook,
+	searchGenre,
+	createBook,
+	getUserByStudentId,
 };
 
 export default Api;

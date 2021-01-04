@@ -10,7 +10,6 @@ import {defaultTextInputState, TextInputStateType} from '../../@types/common/Tex
 import {ResetPasswordDataBodyType, SendResetPasswordEmailDataBodyType, VerifyPasswordDataBodyType} from '../../@types/dataBody';
 import ERROR_CODE from '../../constants/ErrorCode';
 import CustomModal from '../Common/CustomModal';
-import NetworkErrorModal from '../Common/NetworkErrorModal';
 import {useHistory, useLocation} from 'react-router-dom';
 import H from 'history';
 import Api from '../../sagas/api';
@@ -272,7 +271,6 @@ const ResetPassword: FC = () => {
 				{resendEmailAndVerifyPasswordButton}
 				{resetPasswordButton}
 			</Box>
-			<NetworkErrorModal ref={modalRef} />
 		</div>
 	);
 };

@@ -6,10 +6,11 @@ import {AuthorType} from '../../../../@types/entity';
 import Api from '../../../../sagas/api';
 import {OK} from '../../../../constants/Constant';
 import CustomModal from '../../../Common/CustomModal';
-import NetworkErrorModal from '../../../Common/NetworkErrorModal';
 import Loading from '../../../Common/Loading';
 import {makeStyles, Theme, createStyles} from '@material-ui/core/styles';
 import ERROR_CODE from '../../../../constants/ErrorCode';
+import {toast, ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
@@ -27,7 +28,6 @@ const AuthorDetail: FC = () => {
 	const history = useHistory();
 	type ModalHandleType = ElementRef<typeof CustomModal>;
 	const loadingModalRef = useRef<ModalHandleType>(null);
-	const networkErrorModalRef = useRef<ModalHandleType>(null);
 	type ParamsType = {
 		genreId: string;
 		authorId: string;
@@ -49,11 +49,11 @@ const AuthorDetail: FC = () => {
 				if (response.data.errorCode === ERROR_CODE.GET_AUTHOR_INFO_ERROR.AUTHOR_NOT_EXSIST) {
 					history.replace(PathName.Authors + '/' + genreId);
 				} else {
-					networkErrorModalRef.current?.openModal();
+					toast('Network error', {type: 'error'});
 				}
 			}
 		} else {
-			networkErrorModalRef.current?.openModal();
+			toast('Network error', {type: 'error'});
 		}
 	}, [authorId, genreId, history]);
 
@@ -63,7 +63,6 @@ const AuthorDetail: FC = () => {
 
 	const goBack = useCallback((): void => {
 		history.goBack();
-		// history.replace(`${PathName.Authors}/${genreId}`, {});
 	}, [history]);
 
 	const backButton = useMemo((): ReactNode => (
@@ -77,7 +76,10 @@ const AuthorDetail: FC = () => {
 			return (
 				<>
 					<div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
-						<Avatar style={{height: 200, width: 200}} alt={state.author.name} src={state.author.avatar[0]} />
+						<Avatar 
+							style={{height: 200, width: 200}} 
+							alt={state.author.name} 
+							src={state.author.avatar[0]} />
 						<p style={{fontSize: 30, marginTop: 10, fontWeight: 'bold'}}>{state.author.name}</p>
 					</div>
 					<div style={{alignSelf: 'left'}}>
@@ -98,17 +100,15 @@ const AuthorDetail: FC = () => {
 		</CustomModal>
 	), [style.paper]);
 
-	const networkErrorModal = useMemo((): ReactNode => (
-		<NetworkErrorModal ref={networkErrorModalRef} />
-	), []);
-
 	return (
 		<div style={{display: 'flex', flex: 1, height: '100%', overflowY: 'auto'}}>
-			<div ref={divElementRef} style={{display: 'flex', flex: 1, marginLeft: 20, marginRight: 20, flexDirection: 'column'}}>
+			<div 
+				ref={divElementRef} 
+				style={{display: 'flex', flex: 1, marginLeft: 20, marginRight: 20, flexDirection: 'column'}}>
 				{backButton}
 				{authorInfo}
 				{loadingModal}
-				{networkErrorModal}
+				<ToastContainer />
 			</div>
 		</div>
 	);

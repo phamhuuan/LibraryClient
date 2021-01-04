@@ -1,4 +1,4 @@
-import {Button, Avatar} from '@material-ui/core';
+import {Avatar} from '@material-ui/core';
 import React, {FC} from 'react';
 import {useHistory} from 'react-router-dom';
 import {AuthorItemPropsType} from '../../../../@types/componentPropsType/AuthorItemPropsType';
@@ -11,15 +11,13 @@ const GenreItem: FC<AuthorItemPropsType> = (props: AuthorItemPropsType) => {
 		history.push(PathName.Authors + '/' + props.author.genreId + '/' + props.author.authorId);
 	};
 	return (
-		<Button onClick={goToAuthorDetailScreen} className={'authorButton'}>
+		<div onClick={goToAuthorDetailScreen} className={'authorButton'}>
 			<div className={'authorButtonText'}>
-				<Avatar 
-					alt={props.author.name} 
-					src={props.author.avatar[0]} />
+				<Avatar alt={props.author.name} src={props.author.avatar[0]} />
 				<div style={{width: 10}} />
 				{props.author.name}
 			</div>
-		</Button>
+		</div>
 	);
 }
 

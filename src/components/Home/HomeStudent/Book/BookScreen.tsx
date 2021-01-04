@@ -1,6 +1,5 @@
 import React, {ElementRef, FC, ReactNode, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import CustomModal from '../../../Common/CustomModal';
-import NetworkErrorModal from '../../../Common/NetworkErrorModal';
 import Loading from '../../../Common/Loading';
 import {makeStyles, Theme, createStyles} from '@material-ui/core/styles';
 import {useParams, useHistory} from 'react-router-dom';
@@ -11,6 +10,9 @@ import {Carousel} from 'react-responsive-carousel';
 import {BookResponseType} from '../../../../@types/entity';
 import {Button} from '@material-ui/core';
 import {parseDate} from '../../../../utils/Utils';
+import {toast, ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 const useStyles = makeStyles((theme: Theme) =>
 	createStyles({
 		paper: {
@@ -25,7 +27,6 @@ const BookScreen: FC = () => {
 	const style = useStyles();
 	type ModalHandleType = ElementRef<typeof CustomModal>;
 	const loadingModalRef = useRef<ModalHandleType>(null);
-	const networkErrorModalRef = useRef<ModalHandleType>(null);
 	type ParamsType = {
 		bookId: string;
 	}
@@ -38,7 +39,11 @@ const BookScreen: FC = () => {
 		if (result && result.status === 200) {
 			if (result.data.status === OK) {
 				setBook(result.data.book);
+			} else {
+				toast('Network error', {type: 'error'});
 			}
+		} else {
+			toast('Network error', {type: 'error'});
 		}
 	}, [bookId]);
 
@@ -52,10 +57,6 @@ const BookScreen: FC = () => {
 			<Loading />
 		</CustomModal>
 	), [style.paper]);
-
-	const networkErrorModal = useMemo((): ReactNode => (
-		<NetworkErrorModal ref={networkErrorModalRef} />
-	), []);
 
 	const goBack = useCallback((): void => {
 		history.goBack();
@@ -105,7 +106,7 @@ const BookScreen: FC = () => {
 			{backButton}
 			{bookInfo}
 			{loadingModal}
-			{networkErrorModal}
+			<ToastContainer />
 		</div>
 	)
 };
